@@ -8,7 +8,14 @@ import "./globals.css";
 const displayFont = Noto_Sans_Thai({ variable: "--font-display", weight: ["700", "800"], subsets: ["thai", "latin"], display: "swap" });
 const textFont = Noto_Serif_Thai({ variable: "--font-text", weight: ["400", "600"], subsets: ["thai", "latin"], display: "swap" });
 
+// URL หลักของเว็บ ใช้ต่อกับลิงก์ relative ใน canonical / og:image
+// ตั้ง SITE_URL ใน env ตอน deploy (บน Vercel ถ้าไม่ตั้งจะใช้โดเมน production ให้อัตโนมัติ)
+const siteUrl =
+  process.env.SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: { default: "SmartLern | หลักสูตรสั้นสำหรับบุคลากร", template: "%s | SmartLern" },
   description: "ห้องเรียนออนไลน์ของฝ่ายฝึกอบรม หลักสูตรละ 30–60 นาที เรียนได้ทุกอุปกรณ์",
 };
