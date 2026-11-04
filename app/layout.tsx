@@ -1,12 +1,27 @@
 ﻿import type { Metadata } from "next";
-import { Noto_Sans_Thai, Noto_Serif_Thai } from "next/font/google";
+import localFont from "next/font/local";
 import Link from "next/link";
 import { SiteHeader } from "./components/site-header";
 import { photoCredits } from "./data/courses";
 import "./globals.css";
 
-const displayFont = Noto_Sans_Thai({ variable: "--font-display", weight: ["700", "800"], subsets: ["thai", "latin"], display: "swap" });
-const textFont = Noto_Serif_Thai({ variable: "--font-text", weight: ["400", "600"], subsets: ["thai", "latin"], display: "swap" });
+const displayFont = localFont({
+  src: [
+    { path: "./fonts/IBMPlexSansThai-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/IBMPlexSansThai-Bold.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-display",
+  display: "swap",
+});
+const textFont = localFont({
+  src: [
+    { path: "./fonts/IBMPlexSansThaiLooped-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/IBMPlexSansThaiLooped-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/IBMPlexSansThaiLooped-SemiBold.ttf", weight: "600", style: "normal" },
+  ],
+  variable: "--font-text",
+  display: "swap",
+});
 
 // URL หลักของเว็บ ใช้ต่อกับลิงก์ relative ใน canonical / og:image
 // ตั้ง SITE_URL ใน env ตอน deploy (บน Vercel ถ้าไม่ตั้งจะใช้โดเมน production ให้อัตโนมัติ)
