@@ -1,7 +1,10 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { auth, signOut } from "@/auth";
 
 async function UserInfo() {
+  // auth() ใช้ crypto ตอนถอด session จึงต้องบอก Next ให้ render ตอน request ก่อน
+  await connection();
   const session = await auth();
 
   return (

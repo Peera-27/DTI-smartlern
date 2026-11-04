@@ -1,33 +1,48 @@
 ﻿import type { Metadata } from "next";
-import { IBM_Plex_Sans_Thai_Looped, Prompt } from "next/font/google";
+import { Noto_Sans_Thai, Noto_Serif_Thai } from "next/font/google";
 import Link from "next/link";
 import { SiteHeader } from "./components/site-header";
+import { photoCredits } from "./data/courses";
 import "./globals.css";
 
-const thaiFont = IBM_Plex_Sans_Thai_Looped({ variable: "--font-thai", weight: ["400", "500", "600"], subsets: ["thai", "latin"], display: "swap" });
-const headingFont = Prompt({ variable: "--font-heading", weight: ["500", "600", "700"], subsets: ["thai", "latin"], display: "swap" });
+const displayFont = Noto_Sans_Thai({ variable: "--font-display", weight: ["700", "800"], subsets: ["thai", "latin"], display: "swap" });
+const textFont = Noto_Serif_Thai({ variable: "--font-text", weight: ["400", "600"], subsets: ["thai", "latin"], display: "swap" });
+
 export const metadata: Metadata = {
-  title: { default: "SmartLern | เรียนรู้ สู่โอกาสใหม่", template: "%s | SmartLern" },
-  description: "พื้นที่เรียนรู้ออนไลน์ พัฒนาทักษะและต่อยอดความรู้ในแบบของคุณ",
+  title: { default: "SmartLern | หลักสูตรสั้นสำหรับบุคลากร", template: "%s | SmartLern" },
+  description: "ห้องเรียนออนไลน์ของฝ่ายฝึกอบรม หลักสูตรละ 30–60 นาที เรียนได้ทุกอุปกรณ์",
 };
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="th" className={`${thaiFont.variable} ${headingFont.variable}`}>
+    <html lang="th" className={`${displayFont.variable} ${textFont.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>
         <SiteHeader />
         <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
         <footer className="site-footer">
-          <div className="container footer-inner">
-            <div>
-              <Link href="/" className="brand">Smart<span>Lern</span>.</Link>
-              <p>เรียนรู้ได้ทุกวัน เติบโตได้ในแบบของคุณ</p>
+          <div className="wrap">
+            <p className="footer-name" aria-hidden="true">SmartLern</p>
+            <div className="grid footer-row">
+              <nav className="footer-places" aria-label="ลิงก์ท้ายเว็บ">
+                <Link href="/#courses">หลักสูตรทั้งหมด</Link>
+                <Link href="/login">เข้าสู่ระบบ</Link>
+                <Link href="/register">สมัครสมาชิก</Link>
+              </nav>
+              <div className="footer-credits">
+                <h2>ภาพประกอบ</h2>
+                <ul>
+                  {photoCredits.map((c) => (
+                    <li key={c.href}><a href={c.href} target="_blank" rel="noreferrer">“{c.title}”</a> โดย {c.by}, {c.licence}</li>
+                  ))}
+                </ul>
+                <p>ภาพปรับเป็นขาวดำ</p>
+              </div>
             </div>
-            <nav className="footer-links" aria-label="ข้อมูลเว็บไซต์">
-              <details><summary>เกี่ยวกับเรา</summary><p>SmartLern คือพื้นที่เรียนรู้สำหรับทุกคนในองค์กร เพื่อพัฒนาทักษะที่ใช้ได้จริงในการทำงาน</p></details>
-              <details><summary>คู่มือการใช้งาน</summary><p>ค้นหาหรือเลือกหมวดหมู่ที่สนใจ แล้วกดดูรายละเอียดหลักสูตร ขณะนี้แสดงหลักสูตรตัวอย่างเพื่อทดลองใช้งาน</p></details>
-              <details><summary>ติดต่อฝ่ายฝึกอบรม</summary><p>ข้อมูลติดต่อฝ่ายฝึกอบรมจะประกาศให้ทราบเมื่อเปิดให้บริการ</p></details>
-            </nav>
+            <div className="footer-legal">
+              <span>© 2569 SmartLern · ฝ่ายฝึกอบรม</span>
+              <a href="#top">กลับขึ้นด้านบน</a>
+            </div>
           </div>
         </footer>
       </body>
