@@ -25,7 +25,7 @@ export function SiteHeader() {
           <form className="header-search" action="/#courses" method="get" role="search">
             <label className="sr-only" htmlFor="header-search">ค้นหาหลักสูตร</label>
             <input id="header-search" name="q" type="search" placeholder="ค้นหาหลักสูตร" />
-            <button type="submit" aria-label="ค้นหา" onClick={() => setOpen(false)}><Icon name="search" size={19} /></button>
+            <button type="submit" aria-label="ค้นหา" onClick={() => setOpen(false)}><Icon name="search" size={20} /></button>
           </form>
           <Link href="/login" className="login-button" aria-current={pathname === "/login" ? "page" : undefined} onClick={() => setOpen(false)}>เข้าสู่ระบบ</Link>
         </nav>

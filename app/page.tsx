@@ -20,7 +20,7 @@ const faqs = [
   { q: "เปิดให้เรียนเมื่อไร", a: "ตอนนี้เป็นช่วงทดลองระบบ หลักสูตรทั้งหกบนหน้านี้เป็นตัวอย่าง ฝ่ายฝึกอบรมจะประกาศวันเปิดเรียนอีกครั้ง" },
   { q: "ใครเรียนได้บ้าง", a: "บุคลากรทุกคนในองค์กร สมัครด้วยอีเมลกับรหัสผ่าน หรือเข้าสู่ระบบด้วยบัญชี Google" },
   { q: "ต้องใช้อุปกรณ์อะไร", a: "คอมพิวเตอร์ แท็บเล็ต หรือมือถือที่ต่ออินเทอร์เน็ตได้ ไม่ต้องติดตั้งโปรแกรมเพิ่ม" },
-  { q: "หาหลักสูตรที่ใช่ได้อย่างไร", a: "ค้นหาจากชื่อ เลือกหมวดหมู่ที่สนใจ หรือบอกว่าคุณมีเวลากี่นาที แล้วกดชื่อหลักสูตรเพื่ออ่านรายละเอียด" },
+  { q: "หาหลักสูตรที่ใช่ได้อย่างไร", a: "ค้นหาจากชื่อ เลือกหมวดหมู่ที่สนใจ หรือเรียงตามระยะเวลา แล้วกดดูรายละเอียดหลักสูตรเพื่ออ่านเพิ่มเติม" },
   { q: "ติดต่อฝ่ายฝึกอบรมได้ที่ไหน", a: "ข้อมูลติดต่อฝ่ายฝึกอบรมจะประกาศให้ทราบเมื่อเปิดให้บริการ" },
 ];
 
@@ -83,15 +83,19 @@ export default function Home() {
       </section>
 
       <section className="faq" aria-labelledby="faq-title">
-        <div className="faq-head"><Reveal as="h2" id="faq-title" className="wrap">คำถามที่พบบ่อย</Reveal></div>
-        {faqs.map((f) => (
-          <div key={f.q} className="faq-band">
-            <div className="wrap grid">
-              <Reveal as="h3">{f.q}</Reveal>
-              <Reveal as="p" d={1}>{f.a}</Reveal>
-            </div>
+        <div className="wrap faq-inner">
+          <div className="faq-head">
+            <h2 id="faq-title">คำถามที่พบบ่อย</h2>
           </div>
-        ))}
+          <div className="faq-boxes">
+            {faqs.map((faq) => (
+              <details className="faq-box" key={faq.q}>
+                <summary><span>{faq.q}</span><span className="faq-toggle" aria-hidden="true"/></summary>
+                <p>{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
