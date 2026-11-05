@@ -96,6 +96,11 @@ async function Dashboard() {
           <dt>บทบาท</dt>
           <dd>{session?.user?.role ? roleLabel[session.user.role] : "-"}</dd>
         </dl>
+        {session?.user?.role === "ADMIN" && (
+          <Link href="/admin" className="button button-primary">
+            จัดการหลักสูตร
+          </Link>
+        )}
         <form
           action={async () => {
             "use server";
