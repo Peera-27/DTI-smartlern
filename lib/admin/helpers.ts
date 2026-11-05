@@ -47,8 +47,8 @@ export async function renumberLessons(tx: Tx, courseId: string) {
 }
 
 /** คืนรายการปัญหาที่ทำให้ยัง publish ไม่ได้ (array ว่าง = พร้อม) */
-export async function findPublishProblems(courseId: string): Promise<string[]> {
-  const lessons = await prisma.lesson.findMany({
+export async function findPublishProblems(courseId: string, db: Tx = prisma): Promise<string[]> {
+  const lessons = await db.lesson.findMany({
     where: { courseId },
     orderBy: { position: "asc" },
     select: {
@@ -76,4 +76,14 @@ export async function findPublishProblems(courseId: string): Promise<string[]> {
     }
   }
   return problems;
+}
+
+/** ใช้ใน transaction หลังแก้บทเรียน: ถ้าคอร์สเผยแพร่อยู่แล้วเนื้อหากลายเป็นไม่ครบ ให้ throw เพื่อ rollback */
+export async function assertStillPublishable(tx: Tx, courseId: string) {
+  const course = await tx.course.findUnique({ where: { id: courseId }, select: { published: true } });
+  if (!course?.published) return;
+  const problems = await findPublishProblems(courseId, tx);
+  if (problems.length) {
+    throw new ActionError(`คอร์สนี้เผยแพร่อยู่ แก้แล้วจะไม่ครบ (ยกเลิกเผยแพร่ก่อน):\n- ${problems.join("\n- ")}`);
+  }
 }
