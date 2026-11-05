@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { Icon } from "@/app/components/icons";
+import { Reveal } from "@/app/components/motion";
 import { RichText } from "@/app/components/rich-text";
 import { formatMinutes } from "@/app/data/courses";
 import { getPublishedCourse, getPublishedCourseSlugs } from "@/lib/courses";
@@ -44,48 +46,65 @@ async function CourseDetail({ params }: Pick<PageProps<"/courses/[slug]">, "para
   if (!course) notFound();
 
   return (
-    <article className="wrap mx-auto max-w-3xl space-y-8 py-10">
-      <Link href="/#courses" className="text-sm underline">
-        &larr; หลักสูตรทั้งหมด
-      </Link>
-
-      <header className="space-y-4">
-        <h1 className="text-3xl font-bold">{course.title}</h1>
-        <p className="text-lg">{course.summary}</p>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
-          {course.instructor && <li>ผู้สอน: {course.instructor}</li>}
-          {course.durationMin && <li>เวลาเรียน: {formatMinutes(course.durationMin)}</li>}
-          <li>{course.lessons.length} บทเรียน</li>
-        </ul>
+    <article>
+      <header className="course-hero">
+        <div className="wrap grid course-hero-inner">
+          <div className="course-hero-text">
+            <Reveal as="h1">{course.title}</Reveal>
+            <Reveal as="p" className="course-lead" d={1}>
+              {course.summary}
+            </Reveal>
+            <Reveal as="ul" className="facts" d={2}>
+              {course.durationMin && (
+                <li>
+                  <Icon name="clock" size={18} />
+                  {formatMinutes(course.durationMin)}
+                </li>
+              )}
+              <li>
+                <Icon name="book" size={18} />
+                {course.lessons.length} บทเรียน
+              </li>
+              {course.instructor && <li>สอนโดย{course.instructor}</li>}
+            </Reveal>
+            <Reveal d={3}>
+              <Link href={`/learn/${course.slug}`} className="button button-primary">
+                เริ่มเรียน
+                <Icon name="arrow" size={18} />
+              </Link>
+            </Reveal>
+          </div>
+          {course.coverImage && (
+            <Reveal className="course-hero-image" d={2}>
+              {/* ลิงก์ภายนอกไม่ผ่าน optimizer เพราะไม่ได้ตั้ง images.remotePatterns ไว้ (ถ้าผ่านจะ error) */}
+              <Image src={course.coverImage} alt="" fill priority unoptimized={course.coverImage.startsWith("https://")} sizes="(min-width: 900px) 50vw, 100vw" />
+            </Reveal>
+          )}
+        </div>
       </header>
 
-      {course.coverImage && (
-        <div className="relative aspect-video overflow-hidden">
-          <Image src={course.coverImage} alt="" fill priority sizes="(min-width: 768px) 48rem, 100vw" className="object-cover" />
-        </div>
-      )}
-
-      <RichText doc={course.description} className="space-y-4" />
-
-      <section aria-labelledby="lessons-title" className="space-y-3">
-        <h2 id="lessons-title" className="text-xl font-bold">
-          บทเรียนในหลักสูตร
-        </h2>
-        <ol className="divide-y border-y">
-          {course.lessons.map((l) => (
-            <li key={l.id} className="flex items-baseline justify-between gap-4 py-3">
-              <span>
-                {l.position}. {l.title}
-              </span>
-              <span className="shrink-0 text-sm">{lessonTypeLabel[l.type]}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <Link href={`/learn/${course.slug}`} className="inline-block rounded border px-4 py-2 font-bold">
-        เริ่มเรียน
-      </Link>
+      <div className="wrap grid course-body">
+        {!!course.description && (
+          <section aria-labelledby="about-title" className="course-about">
+            <Reveal as="h2" id="about-title">เกี่ยวกับหลักสูตร</Reveal>
+            <Reveal d={1}>
+              <RichText doc={course.description} className="prose" />
+            </Reveal>
+          </section>
+        )}
+        <section aria-labelledby="lessons-title" className="course-lessons">
+          <Reveal as="h2" id="lessons-title">บทเรียนในหลักสูตร</Reveal>
+          <ol className="lesson-list">
+            {course.lessons.map((l, i) => (
+              <Reveal as="li" key={l.id} d={i + 1}>
+                <span className="lesson-num" aria-hidden="true">{l.position}</span>
+                <span>{l.title}</span>
+                <span className="lesson-type">{lessonTypeLabel[l.type]}</span>
+              </Reveal>
+            ))}
+          </ol>
+        </section>
+      </div>
     </article>
   );
 }
