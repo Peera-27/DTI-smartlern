@@ -18,7 +18,7 @@ export function Crossfade({ images }: { images: { src: string; alt: string }[] }
   return (
     <>
       {images.map((img, i) => (
-        <Image key={img.src} src={img.src} alt={i === index ? img.alt : ""} aria-hidden={i !== index} fill priority={i === 0} sizes="(min-width: 900px) 50vw, 100vw" className={`fade-img${i === index ? " is-shown" : ""}`} />
+        <Image key={img.src} src={img.src} alt={i === index ? img.alt : ""} aria-hidden={i !== index} fill loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} sizes="(min-width: 900px) 50vw, 100vw" className={`fade-img${i === index ? " is-shown" : ""}`} />
       ))}
     </>
   );

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { categories, courses, type Course } from "../data/courses";
 import { Icon } from "./icons";
@@ -11,6 +11,10 @@ import { CourseDialog } from "./course-dialog";
 const PAGE_SIZE = 6;
 
 export function CourseCatalog() {
+  return <Suspense fallback={<section id="courses" className="catalog-loading wrap" aria-busy="true"><h2>เลือกหลักสูตร</h2><p>กำลังโหลดหลักสูตร…</p></section>}><CourseCatalogWithSearchParams /></Suspense>;
+}
+
+function CourseCatalogWithSearchParams() {
   const params = useSearchParams();
   return <Catalog key={params.toString()} initialQuery={params.get("q") ?? ""} initialCategory={params.get("category") ?? "ทั้งหมด"}/>;
 }
@@ -65,7 +69,7 @@ function Catalog({ initialQuery, initialCategory }: { initialQuery: string; init
                 <button type="button" className="course-option" aria-pressed={active} aria-haspopup="dialog" aria-controls="course-dialog" onClick={() => { setActiveId(course.id); setDialogCourse(course); }}>
                   <span className="course-index" aria-hidden="true">{String(start + index + 1).padStart(2, "0")}</span>
                   <span className="course-option-text"><span className="course-option-title">{course.title}</span><span className="course-option-meta">{course.category}<span aria-hidden="true"> · </span>{course.lessons} บทเรียน</span></span>
-                  <span className="course-option-end"><span>{course.duration} นาที</span><Icon name="arrow" size={17}/></span>
+                  <span className="course-option-end"><span>{course.duration} นาที</span><span className="course-details-label">ดูรายละเอียด <Icon name="arrow" size={17}/></span></span>
                 </button>
               </li>;
             })}</ol>

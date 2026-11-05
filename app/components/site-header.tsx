@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import utcLogo from "../../images/utc icon.png";
+import utcLogo from "../images/utc icon.png";
 import { usePathname } from "next/navigation";
 import { Suspense, useRef, useState, type ReactNode } from "react";
 import { categories } from "../data/courses";
