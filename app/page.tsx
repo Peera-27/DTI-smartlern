@@ -1,26 +1,27 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AccountLink } from "./components/account-link";
 import { CourseCatalog } from "./components/course-catalog";
 import { Crossfade, LoopVideo, Reveal } from "./components/motion";
-import { courses, formatMinutes, totalLessons, totalMinutes } from "./data/courses";
+import { courses, totalLessons } from "./data/courses";
 
 const byId = (id: number) => courses.find((c) => c.id === id)!;
 const heroImages = [1, 6].map((id) => ({ src: byId(id).image, alt: byId(id).alt }));
 const shortest = [...courses].sort((a, b) => a.duration - b.duration).slice(0, 2);
 
 const steps = [
-  { line: "ก่อนอื่น สมัครสมาชิก", note: "ใช้อีเมลกับรหัสผ่าน หรือบัญชี Google ก็ได้" },
-  { line: "จากนั้น เลือกหลักสูตร", note: "ค้นหาตามชื่อ ตามหมวด หรือตามเวลาที่คุณมีวันนี้" },
-  { line: "แล้วเรียนทีละบท", note: "บทละประมาณสิบนาที เปิดจากมือถือระหว่างวันก็ได้" },
-  { line: "สุดท้าย ทำแบบทดสอบ", note: "ตอบคำถามท้ายหลักสูตร เพื่อทบทวนสิ่งที่เพิ่งเรียนมา" },
+  { line: "สมัครสมาชิก", note: "ใช้อีเมลกับรหัสผ่าน หรือบัญชี Google" },
+  { line: "เลือกหลักสูตร", note: "ค้นหาทักษะที่สนใจ ตามเวลาที่คุณมี" },
+  { line: "เรียนทีละบท", note: "บทเรียนสั้น เปิดเรียนได้ทุกอุปกรณ์" },
+  { line: "ทำแบบทดสอบ", note: "ทบทวนความเข้าใจหลังเรียนจบ" },
 ];
 
 const faqs = [
   { q: "เปิดให้เรียนเมื่อไร", a: "ตอนนี้เป็นช่วงทดลองระบบ หลักสูตรทั้งหกบนหน้านี้เป็นตัวอย่าง ฝ่ายฝึกอบรมจะประกาศวันเปิดเรียนอีกครั้ง" },
   { q: "ใครเรียนได้บ้าง", a: "บุคลากรทุกคนในองค์กร สมัครด้วยอีเมลกับรหัสผ่าน หรือเข้าสู่ระบบด้วยบัญชี Google" },
   { q: "ต้องใช้อุปกรณ์อะไร", a: "คอมพิวเตอร์ แท็บเล็ต หรือมือถือที่ต่ออินเทอร์เน็ตได้ ไม่ต้องติดตั้งโปรแกรมเพิ่ม" },
-  { q: "หาหลักสูตรที่ใช่ได้อย่างไร", a: "ค้นหาจากชื่อ เลือกหมวดหมู่ที่สนใจ หรือบอกว่าคุณมีเวลากี่นาที แล้วกดชื่อหลักสูตรเพื่ออ่านรายละเอียด" },
+  { q: "หาหลักสูตรที่ใช่ได้อย่างไร", a: "ค้นหาจากชื่อ เลือกหมวดหมู่ที่สนใจ หรือเรียงตามระยะเวลา แล้วกดดูรายละเอียดหลักสูตรเพื่ออ่านเพิ่มเติม" },
   { q: "ติดต่อฝ่ายฝึกอบรมได้ที่ไหน", a: "ข้อมูลติดต่อฝ่ายฝึกอบรมจะประกาศให้ทราบเมื่อเปิดให้บริการ" },
 ];
 
@@ -37,11 +38,11 @@ export default function Home() {
         </div>
         <div className="wrap grid masthead-body">
           <div className="masthead-title">
-            <Reveal as="h1" id="welcome-title">เรียนจบ<br />ในพักเที่ยง</Reveal>
-            <Reveal as="p" className="standfirst" d={1}>SmartLern คือห้องเรียนออนไลน์ของฝ่ายฝึกอบรม มี {courses.length} หลักสูตร หลักสูตรละไม่เกินหนึ่งชั่วโมง เรียนได้จาก<span className="nw">คอมพิวเตอร์</span> <span className="nw">แท็บเล็ต</span> และ<span className="nw">มือถือ</span></Reveal>
+            <Reveal as="h1" id="welcome-title">เพิ่มทักษะ<br />วันละนิด</Reveal>
+            <Reveal as="p" className="standfirst" d={1}>หลักสูตรสั้น 30–60 นาที เรียนได้ทุกอุปกรณ์<br />สำรวจ {courses.length} หลักสูตรตัวอย่างจาก SmartLern ห้องเรียนออนไลน์ของฝ่ายฝึกอบรม</Reveal>
             <Reveal className="masthead-actions" d={2}>
               <a href="#courses" className="button button-primary">เลือกหลักสูตร</a>
-              <Link href="/register" className="text-link">สมัครสมาชิก</Link>
+              <Suspense fallback={<Link href="/register" className="text-link">สมัครสมาชิก</Link>}><AccountLink className="text-link" guest={<Link href="/register" className="text-link">สมัครสมาชิก</Link>} /></Suspense>
             </Reveal>
           </div>
           <Reveal className="masthead-cards" d={3}>
@@ -55,54 +56,43 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="overview wrap" aria-labelledby="overview-title">
-        <h2 id="overview-title" className="sr-only">ภาพรวมหลักสูตร</h2>
-        <Reveal as="p" className="statement">
-          หกหลักสูตรในสี่หมวด: <span className="nw">ความปลอดภัย <Slot id={1} /></span> <span className="nw">ทักษะดิจิทัล <Slot id={2} /></span> <span className="nw">การสื่อสาร <Slot id={3} /></span> <span className="nw">และการบริหาร <Slot id={5} /></span>
-        </Reveal>
-        <div className="grid overview-foot">
-          <Reveal as="p" d={1}>แต่ละหลักสูตรมี 3–5 บทเรียน รวมทั้งหมด {totalLessons} บท ถ้าเรียนครบทุกหลักสูตรใช้เวลา {formatMinutes(totalMinutes)} แบ่งเรียนวันละหลักสูตรก็จบในหนึ่งสัปดาห์ทำงาน</Reveal>
-        </div>
-      </section>
-
-      <Suspense fallback={<section id="courses" className="catalog-loading wrap" aria-busy="true"><h2>เลือกหลักสูตร</h2><p>กำลังโหลดหลักสูตร…</p></section>}>
-        <CourseCatalog />
-      </Suspense>
+      <CourseCatalog />
 
       <section className="steps" aria-labelledby="steps-title">
-        <div className="wrap">
+        <div className="wrap steps-inner">
+          <h2 id="steps-title">เริ่มเรียนใน 4 ขั้นตอน</h2>
+          <p className="steps-intro">เมื่อเปิดให้บริการ คุณเริ่มเรียนได้ง่าย ๆ ตามขั้นตอนนี้</p>
+          <ol className="steps-list">
           {steps.map((s, i) => (
-            <Reveal key={s.line} className="step grid">
-              <div className="step-text" style={{ "--step": i } as React.CSSProperties}>
-                {i === 0 ? <h2 id="steps-title" className="step-line"><Phrases text={s.line} /></h2> : <p className="step-line"><Phrases text={s.line} /></p>}
+            <li key={s.line} className="step">
+              <span className="step-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <div className="step-text">
+                <h3 className="step-line">{s.line}</h3>
                 <p className="step-note">{s.note}</p>
               </div>
-            </Reveal>
+            </li>
           ))}
+          </ol>
+          <div className="steps-actions"><a href="#courses" className="button steps-button">เลือกหลักสูตร</a></div>
         </div>
       </section>
 
       <section className="faq" aria-labelledby="faq-title">
-        <div className="faq-head"><Reveal as="h2" id="faq-title" className="wrap">คำถามที่พบบ่อย</Reveal></div>
-        {faqs.map((f) => (
-          <div key={f.q} className="faq-band">
-            <div className="wrap grid">
-              <Reveal as="h3">{f.q}</Reveal>
-              <Reveal as="p" d={1}>{f.a}</Reveal>
-            </div>
+        <div className="wrap faq-inner">
+          <div className="faq-head">
+            <h2 id="faq-title">คำถามที่พบบ่อย</h2>
           </div>
-        ))}
+          <div className="faq-boxes">
+            {faqs.map((faq) => (
+              <details className="faq-box" key={faq.q}>
+                <summary><span>{faq.q}</span><span className="faq-toggle" aria-hidden="true"/></summary>
+                <p>{faq.a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
 }
 
-function Slot({ id }: { id: number }) {
-  const c = courses.find((x) => x.id === id)!;
-  return <span className="slot"><Image src={c.image} alt={c.alt} fill sizes="120px" /></span>;
-}
-
-// ภาษาไทยไม่มีช่องว่างระหว่างคำ จึงกันไม่ให้วลีถูกตัดกลางคำ แต่ยังขึ้นบรรทัดใหม่ตรงช่องว่างได้
-function Phrases({ text }: { text: string }) {
-  return <>{text.split(" ").map((w, i) => <span key={i}>{i > 0 && " "}<span className="nw">{w}</span></span>)}</>;
-}

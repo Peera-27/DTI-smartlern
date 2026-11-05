@@ -1,24 +1,48 @@
-﻿import type { Metadata } from "next";
-import { Noto_Sans_Thai, Noto_Serif_Thai } from "next/font/google";
+import type { Metadata } from "next";
+import localFont from "next/font/local";
 import Link from "next/link";
-import { SiteHeader } from "./components/site-header";
+import { Suspense } from "react";
+import { AccountLink } from "./components/account-link";
+import { LoginButton, SiteHeader } from "./components/site-header";
 import { photoCredits } from "./data/courses";
 import "./globals.css";
 
-const displayFont = Noto_Sans_Thai({ variable: "--font-display", weight: ["700", "800"], subsets: ["thai", "latin"], display: "swap" });
-const textFont = Noto_Serif_Thai({ variable: "--font-text", weight: ["400", "600"], subsets: ["thai", "latin"], display: "swap" });
+const displayFont = localFont({
+  src: [
+    { path: "./fonts/IBMPlexSansThai-SemiBold.ttf", weight: "600", style: "normal" },
+    { path: "./fonts/IBMPlexSansThai-Bold.ttf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-display",
+  display: "swap",
+});
+const textFont = localFont({
+  src: [
+    { path: "./fonts/IBMPlexSansThaiLooped-Regular.ttf", weight: "400", style: "normal" },
+    { path: "./fonts/IBMPlexSansThaiLooped-Medium.ttf", weight: "500", style: "normal" },
+    { path: "./fonts/IBMPlexSansThaiLooped-SemiBold.ttf", weight: "600", style: "normal" },
+  ],
+  variable: "--font-text",
+  display: "swap",
+});
+
+// URL หลักของเว็บ ใช้ต่อกับลิงก์ relative ใน canonical / og:image
+// ตั้ง SITE_URL ใน env ตอน deploy (บน Vercel ถ้าไม่ตั้งจะใช้โดเมน production ให้อัตโนมัติ)
+const siteUrl =
+  process.env.SITE_URL ??
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: { default: "SmartLern | หลักสูตรสั้นสำหรับบุคลากร", template: "%s | SmartLern" },
   description: "ห้องเรียนออนไลน์ของฝ่ายฝึกอบรม หลักสูตรละ 30–60 นาที เรียนได้ทุกอุปกรณ์",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="th" className={`${displayFont.variable} ${textFont.variable}`}>
+    <html lang="th" data-scroll-behavior="smooth" className={`${displayFont.variable} ${textFont.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>
-        <SiteHeader />
+        <SiteHeader account={<Suspense fallback={<LoginButton />}><AccountLink className="login-button" guest={<LoginButton />} /></Suspense>} />
         <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
         <footer className="site-footer">
           <div className="wrap">

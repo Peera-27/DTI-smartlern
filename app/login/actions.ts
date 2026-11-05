@@ -1,7 +1,7 @@
 "use server";
 
 import { AuthError } from "next-auth";
-import { signIn } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 
 export async function loginWithCredentials(
   email: string,
@@ -16,5 +16,8 @@ export async function loginWithCredentials(
 }
 
 export async function loginWithGoogle() {
+  // ถ้ายังมี session ของผู้ใช้อื่นค้างอยู่ Auth.js จะพยายามผูกบัญชี Google เข้ากับผู้ใช้คนนั้น
+  // และ error OAuthAccountNotLinked ถ้า Google นี้ผูกกับผู้ใช้อื่นไว้แล้ว จึงต้องออกจากระบบก่อน
+  if (await auth()) await signOut({ redirect: false });
   await signIn("google", { redirectTo: "/dashboard" });
 }
