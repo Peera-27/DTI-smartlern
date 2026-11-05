@@ -1,5 +1,7 @@
-﻿"use client";
+"use client";
+import Image from "next/image";
 import Link from "next/link";
+import utcLogo from "../images/utc icon.png";
 import { usePathname } from "next/navigation";
 import { Suspense, useRef, useState, type ReactNode } from "react";
 import { categories } from "../data/courses";
@@ -12,7 +14,7 @@ export function SiteHeader({ account }: { account: ReactNode }) {
   return (
     <header className="site-header" id="top">
       <div className="wrap header-inner">
-        <Link href="/" className="brand" aria-label="SmartLern หน้าแรก" onClick={() => setOpen(false)}>SmartLern</Link>
+        <Link href="/" className="brand" aria-label="UTC หน้าแรก" onClick={() => setOpen(false)}><Image src={utcLogo} alt="UTC" loading="eager" style={{ width: 88, height: 64, objectFit: "contain" }} /></Link>
         <button ref={toggle} className="menu-toggle" type="button" aria-expanded={open} aria-controls="main-navigation" onClick={() => setOpen(!open)}>{open ? "ปิดเมนู" : "เมนู"}</button>
         <nav id="main-navigation" aria-label="เมนูหลัก" className={`main-navigation${open ? " is-open" : ""}`} onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); toggle.current?.focus(); } }}>
           <Link className="nav-link" href="/#courses" onClick={() => setOpen(false)}>หลักสูตร</Link>

@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  transpilePackages: ["@prisma/client"],
   /* config options here */
   experimental: {
     agentFeedback: true,
