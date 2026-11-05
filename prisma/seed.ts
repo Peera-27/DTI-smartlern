@@ -180,7 +180,8 @@ async function seedAdmin() {
 
   await prisma.user.upsert({
     where: { email },
-    update: { role: "ADMIN", ...(passwordHash && { passwordHash }) },
+    // ไม่ใส่รหัสผ่าน = ลบรหัสผ่านเดิมทิ้ง กันกรณีมีคนสมัครดักอีเมลแอดมินไว้ก่อน
+    update: { role: "ADMIN", passwordHash: passwordHash ?? null },
     create: { email, name: "ผู้ดูแลระบบ", role: "ADMIN", passwordHash },
   });
   console.log(`แอดมิน: ${email}`);

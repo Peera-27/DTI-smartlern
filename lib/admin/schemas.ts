@@ -17,8 +17,8 @@ const richText = z
 
 const httpsUrl = z.url({ protocol: /^https$/, error: "ต้องเป็นลิงก์ https" });
 
-/** รูปปก: ลิงก์ https หรือไฟล์ใน /public เช่น /media/safety.jpg */
-const imageSrc = z.union([httpsUrl, z.string().regex(/^\/[\w\-./]+$/, "ต้องเป็นลิงก์ https หรือ path ที่ขึ้นต้นด้วย /")]);
+/** รูปปก: ลิงก์ https หรือไฟล์ใน /public เช่น /media/safety.jpg (ห้าม // ซึ่งคือลิงก์ไปเว็บอื่น) */
+export const imageSrc = z.union([httpsUrl, z.string().regex(/^\/(?!\/)[\w\-./]+$/, "ต้องเป็นลิงก์ https หรือ path ที่ขึ้นต้นด้วย /")]);
 
 /** รับได้ทั้ง ID 11 ตัว หรือ URL เต็มของ YouTube แล้วเก็บเฉพาะ ID */
 export function extractYoutubeId(input: string): string | null {

@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { ActionError, adminAction } from "../action";
-import { applyLessonOrder, getCourseSlug, invalidateCourse, renumberLessons, toJson } from "../helpers";
+import { applyLessonOrder, assertStillPublishable, getCourseSlug, invalidateCourse, renumberLessons, toJson } from "../helpers";
 import { createLessonSchema, lessonBodySchema, lessonIdSchema, reorderLessonsSchema, updateLessonSchema } from "../schemas";
 
 /** แปลง lesson จาก schema เป็นข้อมูลที่บันทึก: field ที่ไม่ใช้กับชนิดนั้นจะถูกล้างเป็น null */
@@ -51,14 +51,23 @@ export const updateLesson = adminAction(updateLessonSchema, async ({ id, lesson 
   const updated = await prisma.$transaction(async (tx) => {
     const current = await tx.lesson.findUnique({
       where: { id },
-      select: { course: { select: { slug: true } }, quiz: { select: { id: true } } },
+      select: {
+        courseId: true,
+        course: { select: { slug: true } },
+        quiz: { select: { id: true, _count: { select: { attempts: true } } } },
+      },
     });
     if (!current) throw new ActionError("ไม่พบบทเรียน");
 
-    if (lesson.type !== "QUIZ" && current.quiz) await tx.quiz.delete({ where: { id: current.quiz.id } });
+    if (lesson.type !== "QUIZ" && current.quiz) {
+      // ลบ quiz = ลบผลสอบของผู้เรียนตาม cascade
+      if (current.quiz._count.attempts) throw new ActionError(`เปลี่ยนชนิดไม่ได้: มีผลสอบของผู้เรียน ${current.quiz._count.attempts} ครั้ง`);
+      await tx.quiz.delete({ where: { id: current.quiz.id } });
+    }
     if (lesson.type === "QUIZ" && !current.quiz) await tx.quiz.create({ data: { lessonId: id } });
 
     await tx.lesson.update({ where: { id }, data: lessonData(lesson) });
+    await assertStillPublishable(tx, current.courseId);
     return { id, slug: current.course.slug };
   });
   invalidateCourse(updated.slug);
@@ -70,11 +79,21 @@ export const deleteLesson = adminAction(lessonIdSchema, async ({ id }) => {
   const slug = await prisma.$transaction(async (tx) => {
     const lesson = await tx.lesson.findUnique({
       where: { id },
-      select: { courseId: true, course: { select: { slug: true } } },
+      select: {
+        courseId: true,
+        course: { select: { slug: true } },
+        _count: { select: { progress: true } },
+        quiz: { select: { _count: { select: { attempts: true } } } },
+      },
     });
     if (!lesson) throw new ActionError("ไม่พบบทเรียน");
+    // เหมือน deleteCourse: cascade จะลบความคืบหน้าและผลสอบของผู้เรียนไปด้วย
+    if (lesson._count.progress || lesson.quiz?._count.attempts) {
+      throw new ActionError("ลบไม่ได้: มีผู้เรียนเริ่มบทนี้หรือทำแบบทดสอบแล้ว");
+    }
     await tx.lesson.delete({ where: { id } });
     await renumberLessons(tx, lesson.courseId);
+    await assertStillPublishable(tx, lesson.courseId);
     return lesson.course.slug;
   });
   invalidateCourse(slug);

@@ -116,8 +116,7 @@ model Lesson {
   progress LessonProgress[]
   quiz     Quiz?
 
-  @@unique([courseId, position])
-  @@index([courseId])
+  @@unique([courseId, position]) // ใช้เป็น index ของ courseId ได้ด้วย
 }
 
 // ---------- Quiz ----------

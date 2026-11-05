@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { categories, courses, type Course } from "../data/courses";
@@ -87,7 +88,7 @@ function CoursePreview({ course }: { course: Course }) {
         <p className="selected-course-description">{course.description}</p>
         <div className="selected-course-facts"><span><Icon name="clock" size={16}/>{course.duration} นาที</span><span><Icon name="book" size={16}/>{course.lessons} บทเรียน</span></div>
         <p className="selected-course-instructor">สอนโดยฝ่ายฝึกอบรม</p>
-        <p className="course-note">หลักสูตรตัวอย่าง ยังไม่เปิดลงทะเบียนเรียน</p>
+        {course.slug ? <Link href={`/courses/${course.slug}`} className="button button-primary">ดูหลักสูตรและเริ่มเรียน</Link> : <p className="course-note">หลักสูตรตัวอย่าง ยังไม่เปิดลงทะเบียนเรียน</p>}
       </div>
     </div>
   );

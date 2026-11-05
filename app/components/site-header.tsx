@@ -1,14 +1,14 @@
 ﻿"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState, type ReactNode } from "react";
 import { categories } from "../data/courses";
 import { Icon } from "./icons";
 
-export function SiteHeader() {
+/** account = ลิงก์บัญชีจากฝั่งเซิร์ฟเวอร์ (AccountLink) เพราะ header นี้เป็น client component */
+export function SiteHeader({ account }: { account: ReactNode }) {
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
-  const pathname = usePathname();
   return (
     <header className="site-header" id="top">
       <div className="wrap header-inner">
@@ -27,9 +27,19 @@ export function SiteHeader() {
             <input id="header-search" name="q" type="search" placeholder="ค้นหาหลักสูตร" />
             <button type="submit" aria-label="ค้นหา" onClick={() => setOpen(false)}><Icon name="search" size={20} /></button>
           </form>
-          <Link href="/login" className="login-button" aria-current={pathname === "/login" ? "page" : undefined} onClick={() => setOpen(false)}>เข้าสู่ระบบ</Link>
+          <span style={{ display: "contents" }} onClick={() => setOpen(false)}>{account}</span>
         </nav>
       </div>
     </header>
   );
+}
+
+// usePathname รอ URL จริงในหน้า dynamic route จึงแยกมาครอบ Suspense ไม่ให้ทั้ง header ต้องรอ
+export function LoginButton() {
+  return <Suspense fallback={<Link href="/login" className="login-button">เข้าสู่ระบบ</Link>}><LoginLink /></Suspense>;
+}
+
+function LoginLink() {
+  const pathname = usePathname();
+  return <Link href="/login" className="login-button" aria-current={pathname === "/login" ? "page" : undefined}>เข้าสู่ระบบ</Link>;
 }

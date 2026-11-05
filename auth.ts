@@ -15,6 +15,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  events: {
+    // ผูก Google ครั้งแรกกับบัญชีที่ยังไม่ยืนยันอีเมล: ลบรหัสผ่านทิ้ง เพราะอาจเป็นคนอื่นสมัครดักอีเมลนี้ไว้
+    async linkAccount({ user }) {
+      if ("emailVerified" in user && user.emailVerified) return;
+      await prisma.user.update({ where: { id: user.id }, data: { passwordHash: null, emailVerified: new Date() } });
+    },
+  },
   providers: [
     ...authConfig.providers,
     Credentials({

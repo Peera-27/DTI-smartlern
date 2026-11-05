@@ -28,19 +28,17 @@ export const saveQuiz = adminAction(saveQuizSchema, async ({ lessonId, passingSc
     });
 
     await tx.question.deleteMany({ where: { quizId: quiz.id } }); // ตัวเลือกถูกลบตาม cascade
-    for (const [i, q] of questions.entries()) {
-      await tx.question.create({
-        data: {
-          quizId: quiz.id,
-          position: i + 1,
-          text: q.text,
-          explanation: q.explanation ?? null,
-          options: { create: q.options.map((o) => ({ text: o.text, isCorrect: o.isCorrect })) },
-        },
-      });
-    }
+    const created = await tx.question.createManyAndReturn({
+      data: questions.map((q, i) => ({ quizId: quiz.id, position: i + 1, text: q.text, explanation: q.explanation ?? null })),
+      select: { id: true, position: true },
+    });
+    // จับคู่ด้วย position เพราะลำดับที่ DB คืนมาไม่รับประกัน
+    const idAt = new Map(created.map((c) => [c.position, c.id]));
+    await tx.option.createMany({
+      data: questions.flatMap((q, i) => q.options.map((o) => ({ questionId: idAt.get(i + 1)!, text: o.text, isCorrect: o.isCorrect }))),
+    });
     return lesson.course.slug;
-  }, { timeout: 20_000 }); // คำถามเยอะ + DB บน Neon อาจเกิน 5 วินาทีที่เป็นค่าเริ่มต้น
+  });
 
   invalidateCourse(slug);
   return null;
