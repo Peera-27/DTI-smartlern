@@ -1,12 +1,14 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { AccountLink } from "./components/account-link";
 import { CourseCatalog } from "./components/course-catalog";
 import { Crossfade, LoopVideo, Reveal } from "./components/motion";
 import { courses, formatMinutes, totalLessons, totalMinutes } from "./data/courses";
 
 const byId = (id: number) => courses.find((c) => c.id === id)!;
 const heroImages = [1, 6].map((id) => ({ src: byId(id).image, alt: byId(id).alt }));
+const registerLink = <Link href="/register" className="text-link">สมัครสมาชิก</Link>;
 const shortest = [...courses].sort((a, b) => a.duration - b.duration).slice(0, 2);
 
 const steps = [
@@ -41,7 +43,7 @@ export default function Home() {
             <Reveal as="p" className="standfirst" d={1}>SmartLern คือห้องเรียนออนไลน์ของฝ่ายฝึกอบรม มี {courses.length} หลักสูตร หลักสูตรละไม่เกินหนึ่งชั่วโมง เรียนได้จาก<span className="nw">คอมพิวเตอร์</span> <span className="nw">แท็บเล็ต</span> และ<span className="nw">มือถือ</span></Reveal>
             <Reveal className="masthead-actions" d={2}>
               <a href="#courses" className="button button-primary">เลือกหลักสูตร</a>
-              <Link href="/register" className="text-link">สมัครสมาชิก</Link>
+              <Suspense fallback={registerLink}><AccountLink className="text-link" guest={registerLink} /></Suspense>
             </Reveal>
           </div>
           <Reveal className="masthead-cards" d={3}>

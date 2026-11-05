@@ -1,7 +1,9 @@
 ﻿import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Link from "next/link";
-import { SiteHeader } from "./components/site-header";
+import { Suspense } from "react";
+import { AccountLink } from "./components/account-link";
+import { LoginButton, SiteHeader } from "./components/site-header";
 import { photoCredits } from "./data/courses";
 import "./globals.css";
 
@@ -37,10 +39,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="th" className={`${displayFont.variable} ${textFont.variable}`}>
+    <html lang="th" data-scroll-behavior="smooth" className={`${displayFont.variable} ${textFont.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>
-        <SiteHeader />
+        <SiteHeader account={<Suspense fallback={<LoginButton />}><AccountLink className="login-button" guest={<LoginButton />} /></Suspense>} />
         <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
         <footer className="site-footer">
           <div className="wrap">

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, type MouseEvent } from "react";
 import type { Course } from "../data/courses";
 import { Icon } from "./icons";
@@ -40,8 +41,8 @@ export function CourseDialog({ course, onClose }: { course: Course | null; onClo
           <div className="course-dialog-facts"><span><Icon name="clock" size={17}/>{course.duration} นาที</span><span><Icon name="book" size={17}/>{course.lessons} บทเรียน</span><span>ฝ่ายฝึกอบรม</span></div>
           <h3>เกี่ยวกับหลักสูตร</h3>
           <p className="course-dialog-description">{course.description}</p>
-          <p className="course-note">หลักสูตรตัวอย่าง ยังไม่เปิดลงทะเบียนเรียน</p>
-          <div className="course-dialog-footer"><button type="button" className="button button-primary" onClick={() => dialogRef.current?.close()}>กลับไปเลือกหลักสูตร</button></div>
+          {!course.slug && <p className="course-note">หลักสูตรตัวอย่าง ยังไม่เปิดลงทะเบียนเรียน</p>}
+          <div className="course-dialog-footer">{course.slug && <Link href={`/courses/${course.slug}`} className="button button-primary">ดูหลักสูตรและเริ่มเรียน</Link>}<button type="button" className="button button-primary" onClick={() => dialogRef.current?.close()}>กลับไปเลือกหลักสูตร</button></div>
         </div>
       </>}
     </dialog>
