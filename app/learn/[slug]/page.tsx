@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { Icon } from "@/app/components/icons";
 import { RichText } from "@/app/components/rich-text";
 import { completeLesson, enroll, submitQuiz } from "@/lib/learn/actions";
+import { pdfEmbedUrl } from "@/lib/learn/pdf";
 import { prisma } from "@/lib/prisma";
 
 const lessonTypeLabel = { VIDEO: "วิดีโอ", TEXT: "บทอ่าน", QUIZ: "แบบทดสอบ" } as const;
@@ -156,6 +157,12 @@ async function Classroom({ params, searchParams }: PageProps<"/learn/[slug]">) {
         )}
 
         <RichText doc={current.content} className="prose" />
+
+        {pdfEmbedUrl(current.attachmentUrl) && (
+          <div className="pdf-frame">
+            <iframe src={pdfEmbedUrl(current.attachmentUrl)!} title={`เอกสาร ${current.title}`} />
+          </div>
+        )}
 
         {current.attachmentUrl && (
           <a href={current.attachmentUrl} target="_blank" rel="noreferrer" className="text-link">
