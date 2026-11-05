@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { categories, courses, type Course } from "../data/courses";
 import { Icon } from "./icons";
@@ -10,6 +10,14 @@ import { CourseDialog } from "./course-dialog";
 const PAGE_SIZE = 6;
 
 export function CourseCatalog() {
+  return (
+    <Suspense fallback={<section id="courses" className="catalog-loading wrap" aria-busy="true"><h2>เลือกหลักสูตร</h2><p>กำลังโหลดหลักสูตร…</p></section>}>
+      <CourseCatalogWithSearchParams />
+    </Suspense>
+  );
+}
+
+function CourseCatalogWithSearchParams() {
   const params = useSearchParams();
   return <Catalog key={params.toString()} initialQuery={params.get("q") ?? ""} initialCategory={params.get("category") ?? "ทั้งหมด"}/>;
 }
@@ -49,7 +57,8 @@ function Catalog({ initialQuery, initialCategory }: { initialQuery: string; init
   return (
     <section id="courses" className="catalog" aria-labelledby="courses-title">
       <div className="wrap catalog-container">
-        <div className="catalog-heading"><div><h2 id="courses-title" tabIndex={-1}>เลือกหลักสูตร</h2><p>ค้นหาและเลือกเรียนตามทักษะที่คุณสนใจ</p></div><span className="catalog-total">{courses.length} หลักสูตรทั้งหมด</span></div>
+        <div className="catalog-heading"><div><h2 id="courses-title" tabIndex={-1}>เลือกหลักสูตร</h2><p>ค้นหาและสำรวจหลักสูตรตามทักษะที่คุณสนใจ</p></div><span className="catalog-total">{courses.length} หลักสูตรทั้งหมด</span></div>
+        <p className="catalog-notice"><span className="sample-badge">หลักสูตรตัวอย่าง</span><span>ขณะนี้อยู่ระหว่างทดลองระบบ ยังไม่เปิดลงทะเบียนเรียน</span></p>
         <div className={`catalog-split${current ? "" : " is-empty"}`}>
           {current && <aside id="course-preview" className="course-preview-panel" aria-labelledby="preview-title"><CoursePreview course={current}/></aside>}
           <div className="catalog-browser">
@@ -64,7 +73,7 @@ function Catalog({ initialQuery, initialCategory }: { initialQuery: string; init
                 <button type="button" className="course-option" aria-pressed={active} aria-haspopup="dialog" aria-controls="course-dialog" onClick={() => { setActiveId(course.id); setDialogCourse(course); }}>
                   <span className="course-index" aria-hidden="true">{String(start + index + 1).padStart(2, "0")}</span>
                   <span className="course-option-text"><span className="course-option-title">{course.title}</span><span className="course-option-meta">{course.category}<span aria-hidden="true"> · </span>{course.lessons} บทเรียน</span></span>
-                  <span className="course-option-end"><span>{course.duration} นาที</span><Icon name="arrow" size={17}/></span>
+                  <span className="course-option-end"><span>{course.duration} นาที</span><span className="course-details-label">ดูรายละเอียด <Icon name="arrow" size={17}/></span></span>
                 </button>
               </li>;
             })}</ol>

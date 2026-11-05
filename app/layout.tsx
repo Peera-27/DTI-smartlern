@@ -44,15 +44,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 <Link href="/login">เข้าสู่ระบบ</Link>
                 <Link href="/register">สมัครสมาชิก</Link>
               </nav>
-              <div className="footer-credits">
-                <h2>ภาพประกอบ</h2>
+              <details className="footer-credits">
+                <summary>เครดิตภาพประกอบ</summary>
                 <ul>
                   {photoCredits.map((c) => (
                     <li key={c.href}><a href={c.href} target="_blank" rel="noreferrer">“{c.title}”</a> โดย {c.by}, {c.licence}</li>
                   ))}
                 </ul>
                 <p>ภาพปรับเป็นขาวดำ</p>
-              </div>
+              </details>
             </div>
             <div className="footer-legal">
               <span>© 2569 SmartLern · ฝ่ายฝึกอบรม</span>
