@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { ActionError, adminAction } from "../action";
 import { findPublishProblems, invalidateCourse, toJson } from "../helpers";
-import { courseIdSchema, createCourseSchema, setPublishedSchema, updateCourseSchema } from "../schemas";
+import { createCourseSchema, deleteCourseSchema, setPublishedSchema, updateCourseSchema } from "../schemas";
 
 /** สร้างคอร์สใหม่ (เริ่มต้นเป็นฉบับร่าง published = false) */
 export const createCourse = adminAction(createCourseSchema, async (input) => {
@@ -41,18 +41,19 @@ export const setCoursePublished = adminAction(setPublishedSchema, async ({ id, p
 });
 
 /**
- * ลบคอร์ส: ห้ามลบถ้ามีผู้ลงทะเบียนหรือมีใบประกาศแล้ว
- * เพราะ onDelete: Cascade จะลบความคืบหน้าและใบประกาศของผู้เรียนไปด้วย ให้ใช้ unpublish แทน
+ * ลบคอร์ส: onDelete: Cascade จะลบการลงทะเบียน ความคืบหน้า ผลสอบ และใบประกาศของผู้เรียนไปด้วย
+ * ถ้ามีผู้เรียนแล้วต้องส่ง confirmTitle ตรงกับชื่อคอร์สเพื่อยืนยัน
  */
-export const deleteCourse = adminAction(courseIdSchema, async ({ id }) => {
+export const deleteCourse = adminAction(deleteCourseSchema, async ({ id, confirmTitle }) => {
   const course = await prisma.course.findUnique({
     where: { id },
-    select: { slug: true, _count: { select: { enrollments: true, certificates: true } } },
+    select: { slug: true, title: true, _count: { select: { enrollments: true, certificates: true } } },
   });
   if (!course) throw new ActionError("ไม่พบคอร์ส");
-  if (course._count.enrollments || course._count.certificates) {
+  const { enrollments, certificates } = course._count;
+  if ((enrollments || certificates) && confirmTitle !== course.title) {
     throw new ActionError(
-      `ลบไม่ได้: มีผู้ลงทะเบียน ${course._count.enrollments} คน / ใบประกาศ ${course._count.certificates} ใบ ให้ยกเลิกเผยแพร่แทน`,
+      `คอร์สนี้มีผู้ลงทะเบียน ${enrollments} คน / ใบประกาศ ${certificates} ใบ ซึ่งจะถูกลบทั้งหมด พิมพ์ชื่อคอร์สให้ตรงเพื่อยืนยัน`,
     );
   }
   await prisma.course.delete({ where: { id } });

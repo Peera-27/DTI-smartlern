@@ -57,6 +57,7 @@ export async function findPublishProblems(courseId: string, db: Tx = prisma): Pr
       type: true,
       youtubeId: true,
       content: true,
+      attachmentUrl: true,
       quiz: { select: { questions: { select: { options: { select: { isCorrect: true } } } } } },
     },
   });
@@ -67,7 +68,7 @@ export async function findPublishProblems(courseId: string, db: Tx = prisma): Pr
   for (const l of lessons) {
     const name = `บทที่ ${l.position} "${l.title}"`;
     if (l.type === "VIDEO" && !l.youtubeId) problems.push(`${name}: ยังไม่มีวิดีโอ YouTube`);
-    if (l.type === "TEXT" && !l.content) problems.push(`${name}: ยังไม่มีเนื้อหา`);
+    if (l.type === "TEXT" && !l.content && !l.attachmentUrl) problems.push(`${name}: ยังไม่มีเนื้อหาหรือไฟล์ PDF`);
     if (l.type === "QUIZ") {
       const qs = l.quiz?.questions ?? [];
       if (qs.length === 0) problems.push(`${name}: แบบทดสอบยังไม่มีคำถาม`);

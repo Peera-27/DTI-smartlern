@@ -58,7 +58,8 @@ const courseFields = {
 
 export const createCourseSchema = z.object(courseFields);
 export const updateCourseSchema = z.object({ id, ...courseFields }).partial().required({ id: true });
-export const courseIdSchema = z.object({ id });
+/** confirmTitle: ต้องพิมพ์ชื่อคอร์สให้ตรง ถ้าคอร์สมีผู้เรียนแล้ว (ลบแล้วข้อมูลผู้เรียนหายด้วย) */
+export const deleteCourseSchema = z.object({ id, confirmTitle: z.string().trim().optional() });
 export const setPublishedSchema = z.object({ id, published: z.boolean() });
 
 // ---------- Lesson ----------
@@ -68,12 +69,14 @@ const lessonBase = {
   attachmentUrl: httpsUrl.nullish(),
 };
 
-/** แยก field ที่ต้องมีตามชนิดบทเรียน */
-export const lessonBodySchema = z.discriminatedUnion("type", [
-  z.object({ ...lessonBase, type: z.literal("VIDEO"), youtubeId, content: richText.nullish() }),
-  z.object({ ...lessonBase, type: z.literal("TEXT"), content: richText }),
-  z.object({ ...lessonBase, type: z.literal("QUIZ") }),
-]);
+/** แยก field ที่ต้องมีตามชนิดบทเรียน: TEXT ต้องมีเนื้อหาหรือไฟล์แนบ (PDF) อย่างใดอย่างหนึ่ง */
+export const lessonBodySchema = z
+  .discriminatedUnion("type", [
+    z.object({ ...lessonBase, type: z.literal("VIDEO"), youtubeId, content: richText.nullish() }),
+    z.object({ ...lessonBase, type: z.literal("TEXT"), content: richText.nullish() }),
+    z.object({ ...lessonBase, type: z.literal("QUIZ") }),
+  ])
+  .refine((l) => l.type !== "TEXT" || l.content || l.attachmentUrl, "บทอ่านต้องมีเนื้อหาหรือลิงก์ไฟล์ PDF");
 
 export const createLessonSchema = z.object({ courseId: id, lesson: lessonBodySchema });
 export const updateLessonSchema = z.object({ id, lesson: lessonBodySchema });
@@ -107,3 +110,11 @@ export const saveQuizSchema = z.object({
   passingScore: z.int().min(0).max(100),
   questions: z.array(questionSchema).min(1, "ต้องมีอย่างน้อย 1 คำถาม").max(200),
 });
+
+// ---------- Users / enrollments / certificates ----------
+
+export const setRoleSchema = z.object({ id, role: z.enum(["ADMIN", "LEARNER"]) });
+export const userIdSchema = z.object({ id });
+export const enrollByEmailSchema = z.object({ courseId: id, email: z.email("อีเมลไม่ถูกต้อง").trim().toLowerCase() });
+export const enrollmentSchema = z.object({ courseId: id, userId: id });
+export const certificateIdSchema = z.object({ id });
