@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
 // แปลง ?error=... ที่ Auth.js ส่งกลับมาหน้า login เป็นข้อความภาษาไทย
 const messages: Record<string, string> = {
@@ -10,6 +11,10 @@ const messages: Record<string, string> = {
 };
 
 export function AuthErrorNotice() {
+  return <Suspense fallback={null}><AuthErrorNoticeWithSearchParams /></Suspense>;
+}
+
+function AuthErrorNoticeWithSearchParams() {
   const code = useSearchParams().get("error");
   if (!code) return null;
   return (

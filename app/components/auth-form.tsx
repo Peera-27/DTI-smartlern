@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Suspense, useState, useTransition, type FormEvent } from "react";
+import { useState, useTransition, type FormEvent } from "react";
 import { AuthErrorNotice } from "./auth-error-notice";
 import { loginWithCredentials, loginWithGoogle } from "../login/actions";
 import { courses } from "../data/courses";
@@ -83,7 +83,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           <form action={loginWithGoogle}>
             <button type="submit" className="button button-outline auth-google" disabled={pending}>ดำเนินการต่อด้วย Google</button>
           </form>
-          <Suspense fallback={null}><AuthErrorNotice /></Suspense>
+          <AuthErrorNotice />
           <Reveal as="p" className="auth-switch" d={4}>{register ? "มีบัญชีอยู่แล้ว?" : "ยังไม่มีบัญชี?"} <Link href={register ? "/login" : "/register"}>{register ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}</Link></Reveal>
         </section>
       </div>
