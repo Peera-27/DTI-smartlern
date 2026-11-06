@@ -772,3 +772,216 @@ summary::-webkit-details-marker { display: none; }
 /* Consistent course covers on admin previews and learner pages. */
 .course-cover-preview img { aspect-ratio: 16 / 9; width: 100%; height: auto; max-height: none; object-fit: cover; }
 .selected-course-image, .course-hero-image { aspect-ratio: 16 / 9; }
+/* Profile layout: compact account card, then learning content on mobile. */
+.dashboard { max-width: 1280px; gap: 28px; padding-block: 32px 64px; }
+.dashboard > *, .dashboard-courses, .profile-head > div { min-width: 0; }
+.dashboard-courses { order: 2; }
+.dashboard .account-panel { order: 1; border: 1px solid #DCE1EE; border-radius: 20px; padding: 24px; background: var(--paper); color: var(--ink); box-shadow: 0 8px 32px #2E31920A; gap: 16px; }
+.profile-eyebrow { color: var(--navy); font-family: var(--font-display); font-size: .8rem; font-weight: 600; }
+.dashboard .profile-head { margin: 0; align-items: center; }
+.dashboard .profile-head h2 { font-size: 1.25rem; color: var(--navy); }
+.dashboard .profile-head p { color: var(--muted); overflow-wrap: anywhere; margin-top: 4px; }
+.dashboard .profile-avatar { width: 72px; height: 72px; border-color: #E8EAF5; }
+.dashboard .profile-stats { margin: 4px 0 0; padding: 16px 0; border-color: #E6E9F2; color: var(--muted); gap: 8px; }
+.dashboard .profile-stats strong { color: var(--navy); font-size: 1.6rem; }
+.dashboard .account-panel dl { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr); gap: 12px; margin: 0 0 4px; font-size: .875rem; }
+.dashboard .account-panel dt { color: var(--muted); margin: 0; font-size: inherit; }
+.dashboard .account-panel dd { text-align: right; overflow-wrap: anywhere; }
+.dashboard .account-panel .button-primary { background: var(--navy); color: var(--paper); }
+.dashboard .account-panel .button-primary:hover { background: var(--accent-press); }
+.dashboard .account-panel .button-outline { background: var(--paper); border: 1px solid #DCE1EE; color: var(--navy); }
+.dashboard .account-panel .button-outline:hover { background: var(--paper-2); }
+.dashboard .course-rows { gap: 16px; }
+.dashboard .course-row, .dashboard .empty-block { border: 1px solid #E2E6EF; border-radius: 16px; background: var(--paper); }
+.dashboard .course-row h2 { overflow-wrap: anywhere; font-size: 1.125rem; }
+.dashboard .course-row-actions { gap: 12px; }
+.dashboard .progress { width: 100%; max-width: 100%; }
+@media (min-width: 900px) {
+  .dashboard { grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; }
+  .dashboard-courses { order: 1; }
+  .dashboard .account-panel { order: 2; }
+}
+@media (max-width: 599px) {
+  .dashboard { padding-block: 20px 40px; gap: 28px; }
+  .dashboard .account-panel { padding: 20px 16px; border-radius: 16px; }
+  .dashboard h1 { font-size: 1.5rem; }
+  .dashboard .course-row { grid-template-columns: minmax(0, 1fr); padding: 18px 16px; }
+  .dashboard .course-row-actions .button { flex: 1 1 100%; width: 100%; }
+  .dashboard .empty-block { padding: 24px 16px; }
+  .dashboard .empty-block .button { width: 100%; }
+  .settings, .settings-card, .settings-form, .settings-form > *, .settings .field-row > * { min-width: 0; }
+  .settings .field-row { grid-template-columns: minmax(0, 1fr); }
+  .settings-actions { align-items: stretch; }
+  .settings-actions .button { width: 100%; }
+  .main-navigation.is-open { max-height: calc(100dvh - 150px); overflow-y: auto; }
+}
+/* Mobile density: compact sections with readable text and touch-sized controls. */
+@media screen and (max-width: 767px) {
+  :root { --margin: 16px; --gap: 12px; --section: 48px; --step-body: 1rem; --step-lead: 1rem; --step-head: 1.375rem; --step-display: clamp(1.75rem, 6vw, 2.25rem); }
+  html { scroll-padding-top: 132px; }
+  .grid > *, .section-inner > *, .contact-card > *, .news-body, .mini-card-bar > *, .lesson-list li > *, .admin-head > *, .panel-head > * { min-width: 0; }
+  h1, h2, h3, p, dd, .cell-main, .rich-text { overflow-wrap: anywhere; }
+  .nw { white-space: normal; }
+  .button, .admin-shell .button { min-height: 44px; padding: 10px 16px; font-size: .9375rem; line-height: 1.5; gap: 8px; max-width: 100%; white-space: normal; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea, .field input, .field select, .field textarea { font-size: 16px; max-width: 100%; }
+  .header-inner { min-height: 72px; padding-block: 8px; gap: 10px; }
+  .brand img { width: 66px !important; height: 48px !important; }
+  .brand-text { font-size: .875rem; padding-left: 8px; }
+  .brand-text small { font-size: .6875rem; }
+  .topbar-inner { padding-block: 6px; font-size: .75rem; }
+  .menu-toggle { min-height: 44px; padding-inline: 12px; font-size: .875rem; }
+  .nav-link, .category-dropdown > summary { font-size: .9375rem; }
+  .main-navigation.is-open { max-height: calc(100dvh - 116px); overflow-y: auto; overscroll-behavior: contain; }
+  .header-search { width: 100%; }
+  .masthead { padding-bottom: 28px; }
+  .mosaic { grid-template-rows: clamp(116px, 34vw, 210px) clamp(80px, 22vw, 130px); }
+  .tile-accent, .tile-paper { padding: 12px; }
+  .tile-accent p, .tile-paper p { font-size: .9375rem; }
+  .masthead-body { padding-top: 24px; row-gap: 24px; }
+  .masthead h1 { margin-bottom: 12px; line-height: 1.35; }
+  .standfirst { font-size: 1rem; margin-bottom: 20px; }
+  .masthead-cards { gap: 10px; }
+  .mini-card-photo { aspect-ratio: 16 / 9; }
+  .mini-card-bar { flex-wrap: wrap; gap: 4px; padding: 10px; font-size: .8125rem; }
+  .section, .faq, .steps { padding-block: 36px; }
+  .section-head { margin-bottom: 20px; }
+  .about-grid { gap: 16px; }
+  .about-intro { font-size: 1rem; }
+  .pillars, .news-grid, .contact-grid { gap: 12px; }
+  .pillar, .news-body, .contact-card { padding: 16px; }
+  .pillar-icon { width: 36px; height: 36px; margin-bottom: 10px; }
+  .pillar h3, .news-body h3 { font-size: 1rem; }
+  .pillar p, .news-card p, .contact-card p { font-size: .9375rem; }
+  .news-photo { aspect-ratio: 16 / 9; }
+  .contact-card { gap: 12px; }
+  .catalog, .catalog-loading { padding-block: 32px; }
+  .catalog-heading { gap: 8px; margin-bottom: 20px; }
+  .catalog-heading p { font-size: .875rem; }
+  .catalog-tools { gap: 12px; }
+  .chips { gap: 6px; }
+  .chips button { min-height: 44px; padding: 6px 10px; font-size: .8125rem; }
+  .catalog-fields { gap: 10px; }
+  .catalog-search { flex-basis: 100%; }
+  .sort-control { width: 100%; justify-content: space-between; }
+  .sort-control select { flex: 1; min-height: 44px; }
+  .course-option { grid-template-columns: 20px minmax(0, 1fr); gap: 8px; min-height: 0; padding: 14px 4px; }
+  .course-option-title { font-size: .9375rem; }
+  .course-option-end { grid-column: 2; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; white-space: normal; }
+  .course-details-label { min-height: 44px; }
+  .course-dialog { width: calc(100% - 24px); max-height: calc(100dvh - 24px); }
+  .course-dialog-header { padding: 8px 12px; }
+  .course-dialog-image { height: auto; aspect-ratio: 16 / 9; }
+  .course-dialog-content { padding: 20px 16px; }
+  .course-dialog-content h2 { font-size: 1.25rem; }
+  .course-dialog-facts { gap: 8px 16px; padding-block: 12px; }
+  .course-dialog-footer { display: flex; flex-wrap: wrap; gap: 10px; }
+  .course-dialog-footer .button { flex: 1 1 100%; }
+  .steps-list { margin-top: 24px; }
+  .step { gap: 12px; padding-bottom: 20px; }
+  .step-line { font-size: 1rem; }
+  .step-note { font-size: .875rem; margin-top: 4px; }
+  .faq-box summary { padding: 12px 16px; min-height: 52px; font-size: .9375rem; }
+  .faq-box > p { padding: 0 16px 16px; font-size: .9375rem; }
+  .site-footer { padding-block: 24px; }
+  .footer-row { row-gap: 12px; }
+  .footer-places { gap: 4px 16px; }
+  .auth-page { padding-block: 20px 40px; }
+  .auth-panel { padding: 24px 16px; }
+  .auth-panel h1 { font-size: 1.625rem; margin-bottom: 12px; }
+  .auth-description { font-size: 1rem; margin-bottom: 20px; }
+  .auth-form { gap: 16px; }
+  .auth-mosaic { grid-auto-rows: 24vw; }
+  .form-field input { min-height: 44px; }
+  .course-hero { padding-block: 24px 32px; }
+  .course-hero-inner { row-gap: 24px; }
+  .course-hero h1 { font-size: clamp(1.5rem, 6vw, 2rem); line-height: 1.45; margin-bottom: 16px; }
+  .course-hero .facts { margin-bottom: 20px; gap: 8px 16px; }
+  .course-body { padding-block: 32px 40px; row-gap: 28px; }
+  .lesson-list li { grid-template-columns: 24px minmax(0, 1fr); padding: 12px; gap: 8px; }
+  .lesson-list .lesson-type { grid-column: 2; }
+  .classroom { gap: 28px; padding-block: 24px 40px; }
+  .classroom-main { gap: 20px; }
+  .classroom-main h1 { font-size: 1.375rem; }
+  .lesson-actions .button { flex: 1 1 100%; }
+  .quiz { padding: 16px; gap: 16px; }
+  .quiz-form { gap: 20px; }
+  .quiz-option { padding: 10px 12px; min-height: 44px; }
+  .enroll-card { padding-block: 28px 40px; gap: 16px; }
+  .enroll-card h1 { font-size: 1.625rem; }
+  .dashboard .profile-avatar { width: 56px; height: 56px; }
+  .dashboard .profile-head h2 { font-size: 1.125rem; }
+  .dashboard .profile-stats strong { font-size: 1.375rem; }
+  .settings { padding-block: 24px 40px; gap: 16px; }
+  .settings-card { padding: 16px; }
+  .settings .profile-avatar-lg { width: 72px; height: 72px; }
+  .confirm-dialog, .cropper { padding: 20px 16px; max-width: calc(100% - 24px); }
+  .cropper canvas { max-width: 100%; height: auto; }
+  .certificate { border-width: 6px; outline-offset: -14px; padding: 32px 20px; gap: 12px; }
+  .certificate h1 { font-size: 1.5rem; }
+  .certificate-name { font-size: 1.25rem; }
+  .admin-main { padding: 20px 12px 40px; gap: 16px; }
+  .admin-side { padding: 12px; gap: 8px 12px; }
+  .admin-nav { flex-wrap: wrap; gap: 4px; }
+  .admin-nav a { min-height: 44px; padding-inline: 10px; font-size: .875rem; }
+  .admin-head { flex-wrap: wrap; gap: 12px; }
+  .admin-head h1 { font-size: 1.375rem; }
+  .admin-head-actions { flex-wrap: wrap; gap: 8px; }
+  .admin-sub { font-size: .875rem; }
+  .panel, .danger-zone { padding: 16px; }
+  .panel-head, .inline-form, .form-actions { flex-wrap: wrap; gap: 10px; }
+  .inline-form input { min-width: 0; flex: 1 1 160px; }
+  .kpis > div { padding: 12px; }
+  .kpis dd { font-size: 1.375rem; }
+  .table tr { padding: 12px 16px; gap: 8px 12px; }
+  .table .cell-main { overflow-wrap: anywhere; }
+  .row-action, .tool { min-height: 44px; }
+  .tool { min-width: 36px; }
+  .lesson-rows li { grid-template-columns: 24px minmax(0, 1fr); gap: 8px; }
+  .lesson-rows .lesson-tools { grid-column: 2; justify-self: end; }
+  .admin-course-filters { padding: 16px; gap: 12px; }
+  .admin-course-filters .field { flex-basis: 100%; }
+  .course-form-fields { gap: 16px; }
+  .field-row { grid-template-columns: minmax(0, 1fr); }
+  .question { padding: 12px; gap: 10px; }
+  .field, .field-row, .option, .admin-form, .settings-form, .rich-text, .contact-card { min-width: 0; }
+  .rich-text img, .rich-text video { max-width: 100%; height: auto; }
+  .rich-text pre, .rich-text table { max-width: 100%; overflow-x: auto; }
+}
+.header-dropdown { position: relative; }
+.header-dropdown > button { border: 0; background: transparent; color: inherit; text-align: left; }
+.header-dropdown > .header-avatar { padding: 0; }
+.header-dropdown.is-open > .nav-link { background: var(--soot-2); }
+.header-dropdown-panel { position: absolute; top: 100%; left: 0; z-index: 45; min-width: 220px; max-width: min(320px, calc(100vw - 32px)); padding: 8px; border: 1px solid #DCEBF5; border-radius: 8px; background: var(--paper); color: var(--ink); box-shadow: 0 12px 28px #16324F26; }
+.header-dropdown-panel a { display: flex; align-items: center; min-height: 44px; padding: 10px 12px; font-size: .9375rem; border-radius: 6px; overflow-wrap: anywhere; }
+.header-dropdown-panel a:hover, .header-dropdown-panel a:focus-visible { background: var(--paper-2); color: var(--navy); }
+.header-profile-dropdown .header-dropdown-panel { left: auto; right: 0; }
+@media (max-width: 1199px) {
+  .header-dropdown > .nav-link { width: 100%; }
+  .header-dropdown-panel { position: static; min-width: 0; max-width: 100%; margin-block: 4px 8px; box-shadow: none; }
+}
+/* Compact header account button and personal account popover. */
+.header-profile-dropdown { flex-shrink: 0; }
+.header-profile-dropdown > .header-avatar { gap: 10px; padding: 5px 10px 5px 5px; border: 1px solid #FFFFFF40; border-radius: 12px; background: #FFFFFF0D; transition: background-color .15s; }
+.header-profile-dropdown > .header-avatar:hover, .header-profile-dropdown.is-open > .header-avatar { background: #FFFFFF1F; }
+.header-profile-dropdown .header-avatar > img, .header-profile-dropdown .header-avatar > span[aria-hidden] { width: 36px; height: 36px; font-size: .8125rem; border-width: 1px; }
+.header-account-label { display: grid; gap: 2px; min-width: 0; text-align: left; line-height: 1.4; }
+.header-account-label small { font-family: var(--font-text); font-size: .6875rem; font-weight: 400; color: var(--muted-dark); }
+.header-account-label > span { max-width: 104px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8125rem; }
+.header-account-chevron { transition: transform .15s; }
+.header-profile-dropdown.is-open .header-account-chevron { transform: rotate(180deg); }
+.header-profile-dropdown .header-dropdown-panel { width: 290px; min-width: 0; padding: 8px; border-radius: 14px; box-shadow: 0 16px 40px #16324F26; }
+.header-account-summary { display: grid; gap: 4px; padding: 12px; margin-bottom: 6px; border-bottom: 1px solid #E6E9F2; }
+.header-account-summary strong { font-family: var(--font-display); font-size: .9375rem; color: var(--navy); overflow-wrap: anywhere; }
+.header-account-summary > span { color: var(--muted); font-size: .8125rem; overflow-wrap: anywhere; }
+.header-account-summary small { justify-self: start; font-size: .6875rem; padding: 2px 8px; border-radius: 20px; background: #EAF6FE; color: var(--navy); }
+.header-profile-dropdown .header-dropdown-panel a { gap: 10px; font-size: .875rem; min-height: 46px; }
+.header-profile-dropdown .header-dropdown-panel a > span { flex: 1; }
+.header-profile-dropdown .header-dropdown-panel a > svg { color: var(--navy); }
+@media (max-width: 1199px) {
+  .header-profile-dropdown { width: 100%; margin-top: 8px; }
+  .header-profile-dropdown > .header-avatar { width: 100%; }
+  .header-account-label { flex: 1; }
+  .header-account-label > span { max-width: 220px; }
+  .header-profile-dropdown .header-dropdown-panel { width: 100%; max-width: 100%; margin-top: 8px; box-shadow: none; }
+}
+@media (min-width: 1200px) and (max-width: 1399px) { .header-account-label { display: none; } }

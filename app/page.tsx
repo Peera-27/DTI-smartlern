@@ -1,7 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
-import { AccountLink } from "./components/account-link";
 import { CourseCatalog } from "./components/course-catalog";
 import { Crossfade, LoopVideo, Reveal } from "./components/motion";
 import { Icon } from "./components/icons";
@@ -44,7 +42,6 @@ export default function Home() {
             <Reveal as="p" className="standfirst" d={1}>หลักสูตรสั้น 30–60 นาที เรียนได้ทุกอุปกรณ์<br />สำรวจ {courses.length} หลักสูตรตัวอย่างจาก SmartLern ห้องเรียนออนไลน์ของฝ่ายฝึกอบรม</Reveal>
             <Reveal className="masthead-actions" d={2}>
               <a href="#courses" className="button button-primary">เลือกหลักสูตร</a>
-              <Suspense fallback={<Link href="/register" className="text-link">สมัครสมาชิก</Link>}><AccountLink className="text-link" guest={<Link href="/register" className="text-link">สมัครสมาชิก</Link>} /></Suspense>
             </Reveal>
           </div>
           <Reveal className="masthead-cards" d={3}>

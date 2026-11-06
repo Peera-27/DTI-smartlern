@@ -44,7 +44,7 @@ async function Dashboard() {
 
   return (
     <>
-      <section aria-labelledby="dashboard-title">
+      <section className="dashboard-courses" aria-labelledby="dashboard-title">
         <h1 id="dashboard-title">หลักสูตรของฉัน</h1>
         <p className="dashboard-sub">
           ลงทะเบียน {enrollments.length} หลักสูตร · เรียนจบ {finished} หลักสูตร
@@ -93,6 +93,7 @@ async function Dashboard() {
       </section>
 
       <aside aria-labelledby="account-title" className="account-panel">
+        <p className="profile-eyebrow">บัญชีของฉัน</p>
         <div className="profile-head">
           {me?.image ? (
             // eslint-disable-next-line @next/next/no-img-element -- รูปจาก Google ไม่ได้อยู่ใน images.remotePatterns
@@ -118,7 +119,7 @@ async function Dashboard() {
           <dt>บทบาท</dt>
           <dd>{roleLabel[me?.role ?? "LEARNER"]}</dd>
           <dt>สมาชิกตั้งแต่</dt>
-          <dd>{me ? me.createdAt.toLocaleDateString("th-TH", { dateStyle: "long" }) : "-"}</dd>
+          <dd>{me ? me.createdAt.toLocaleDateString("th-TH", { dateStyle: "long", timeZone: "Asia/Bangkok" }) : "-"}</dd>
         </dl>
         <Link href="/dashboard/settings" className="button button-primary">แก้ไขโปรไฟล์และตั้งค่า</Link>
         {me?.role === "ADMIN" && (
