@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps<"/courses/[slug]">)
   const course = await getPublishedCourse(slug);
   if (!course) return { title: "ไม่พบหลักสูตร", robots: { index: false } };
 
-  const images = course.coverImage ? [{ url: course.coverImage, alt: course.title }] : undefined;
+  const images = course.coverImage && !course.coverImage.startsWith("data:") ? [{ url: course.coverImage, alt: course.title }] : undefined;
   return {
     title: course.title,
     description: course.summary,

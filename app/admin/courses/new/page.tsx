@@ -1,7 +1,7 @@
+import { CourseForm } from "../../course-form";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { createCourseForm } from "../../actions";
-import { CourseFields, Flash, PageHead, requireAdminPage } from "../../shared";
+import { Flash, PageHead, requireAdminPage } from "../../shared";
 
 export const metadata: Metadata = { title: "สร้างหลักสูตร", robots: { index: false } };
 
@@ -17,12 +17,7 @@ async function NewCourse({ searchParams }: PageProps<"/admin/courses/new">) {
       />
       <Flash error={error} />
       <section className="panel panel-narrow" aria-label="ข้อมูลหลักสูตรใหม่">
-        <form action={createCourseForm} className="admin-form">
-          <CourseFields />
-          <div className="form-actions">
-            <button className="button button-primary">สร้างหลักสูตร</button>
-          </div>
-        </form>
+        <CourseForm />
       </section>
     </>
   );

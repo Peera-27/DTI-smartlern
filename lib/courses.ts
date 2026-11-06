@@ -1,6 +1,5 @@
 import { cacheTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
-
 // cache tag ที่ใช้ร่วมกันระหว่างหน้า public กับ action ของแอดมิน
 export const tags = {
   courses: "courses",

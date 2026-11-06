@@ -58,6 +58,12 @@ export async function updateCourseForm(id: string, f: FormData) {
   await finish(await updateCourse({ id, ...courseFromForm(f) }), `/admin/courses/${id}`, "บันทึกแล้ว");
 }
 
+export async function saveCourseForm(id: string | null, _previous: { error?: string; fieldErrors?: Record<string, string[]> }, f: FormData) {
+  const result = id ? await updateCourse({ id, ...courseFromForm(f) }) : await createCourse(courseFromForm(f));
+  if (!result.ok) return { error: result.error, fieldErrors: result.fieldErrors };
+  redirect(`/admin/courses/${result.data.id}?done=${encodeURIComponent(id ? "บันทึกแล้ว" : "สร้างหลักสูตรแล้ว")}`);
+}
+
 export async function setPublishedForm(id: string, published: boolean) {
   await finish(await setCoursePublished({ id, published }), `/admin/courses/${id}`, published ? "เผยแพร่แล้ว" : "ยกเลิกเผยแพร่แล้ว");
 }
