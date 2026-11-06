@@ -100,6 +100,10 @@ summary::-webkit-details-marker { display: none; }
 .header-search button { display: grid; place-items: center; flex-shrink: 0; border: 0; border-radius: 6px; background: #EAF6FE; color: var(--accent); min-width: 44px; min-height: 44px; transition: background-color .2s, color .2s; }
 .login-button { border-radius: var(--control-radius); display: inline-flex; flex-shrink: 0; white-space: nowrap; align-items: center; justify-content: center; min-height: 44px; padding: 0 20px; background: var(--paper); color: var(--navy); font-family: var(--font-display); font-weight: 600; transition: background-color .2s; }
 .login-button:hover { background: #EAF6FE; }
+/* รูปโปรไฟล์ใน header: มือถือ (เมนูแนวตั้ง) แสดงรูป + คำว่าโปรไฟล์, จอใหญ่แสดงแค่รูป */
+.header-avatar { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; min-height: 44px; font-family: var(--font-display); font-weight: 600; border-radius: 999px; }
+.header-avatar > img, .header-avatar > span[aria-hidden] { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: var(--yellow); color: var(--navy); font-weight: 700; font-size: 1rem; border: 2px solid var(--paper); transition: box-shadow .2s; }
+.header-avatar:hover > img, .header-avatar:hover > span[aria-hidden] { box-shadow: 0 0 0 4px rgba(255,255,255,.3); }
 
 /* Official top bar + brand */
 .topbar { background: #23256F; color: var(--muted-dark); font-size: .8125rem; line-height: 1.5; }
@@ -109,6 +113,7 @@ summary::-webkit-details-marker { display: none; }
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand-text { display: flex; flex-direction: column; font-size: 1.05rem; line-height: 1.3; letter-spacing: 0; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.3); }
 .brand-text small { font-family: var(--font-text); font-weight: 500; font-size: .75rem; color: var(--muted-dark); }
+@media (max-width: 479px) { .brand-text { display: none; } } /* จอแคบ: ให้ปุ่มเมนู/ปิดเมนูอยู่บรรทัดเดียวกับโลโก้ */
 
 /* Formal homepage sections */
 .section { padding-block: clamp(48px, 6vw, 88px); scroll-margin-top: 16px; }
@@ -397,6 +402,7 @@ summary::-webkit-details-marker { display: none; }
   .dropdown-panel { position: absolute; top: calc(100% + 8px); left: 0; min-width: 200px; z-index: 10; }
   .header-search { margin-left: auto; flex: 0 1 260px; }
   .site-header .login-button { min-height: 50px; padding-inline: 24px; }
+  .header-avatar-label { display: none; }
   .site-header .nav-link, .site-header .category-dropdown > summary { white-space: nowrap; }
   .auth-panel { padding: 64px 80px; }
 }

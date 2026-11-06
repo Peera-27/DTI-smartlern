@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="th" data-scroll-behavior="smooth" className={`${displayFont.variable} ${textFont.variable}`}>
       <body>
         <a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>
-        <SiteHeader account={<Suspense fallback={<LoginButton />}><AccountLink className="login-button" guest={<LoginButton />} /></Suspense>} />
+        <SiteHeader account={<Suspense fallback={<LoginButton />}><AccountLink avatar guest={<LoginButton />} /></Suspense>} />
         <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
         <footer className="site-footer">
           <div className="wrap">
