@@ -1,7 +1,7 @@
 "use server";
 
 import { AuthError } from "next-auth";
-import { auth, signIn, signOut } from "@/auth";
+import { AccountLocked, auth, signIn, signOut } from "@/auth";
 
 export async function loginWithCredentials(
   email: string,
@@ -10,6 +10,7 @@ export async function loginWithCredentials(
   try {
     await signIn("credentials", { email, password, redirectTo: "/dashboard" });
   } catch (e) {
+    if (e instanceof AccountLocked) return { error: `ลองรหัสผ่านผิดหลายครั้งเกินไป กรุณารอ ${e.minutes} นาทีแล้วลองใหม่` };
     if (e instanceof AuthError) return { error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
     throw e; // ต้องโยนต่อ ไม่งั้น redirect หลังล็อกอินสำเร็จจะไม่ทำงาน
   }
