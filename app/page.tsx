@@ -4,7 +4,9 @@ import { Suspense } from "react";
 import { AccountLink } from "./components/account-link";
 import { CourseCatalog } from "./components/course-catalog";
 import { Crossfade, LoopVideo, Reveal } from "./components/motion";
+import { Icon } from "./components/icons";
 import { courses, totalLessons } from "./data/courses";
+import { news, org, pillars } from "./data/site";
 
 const byId = (id: number) => courses.find((c) => c.id === id)!;
 const heroImages = [1, 6].map((id) => ({ src: byId(id).image, alt: byId(id).alt }));
@@ -58,6 +60,48 @@ export default function Home() {
 
       <CourseCatalog />
 
+      <section className="section section-alt" id="about" aria-labelledby="about-title">
+        <div className="wrap section-inner">
+          <div className="about-grid">
+            <div className="section-head">
+              <span className="eyebrow">ABOUT US</span>
+              <h2 id="about-title">เกี่ยวกับ{org.unit}</h2>
+            </div>
+            <p className="about-intro">{org.intro}</p>
+          </div>
+          <ul className="pillars">
+            {pillars.map((p) => (
+              <li key={p.id} id={p.id} className="pillar">
+                <span className="pillar-icon"><Icon name={p.icon} size={24} /></span>
+                <h3><small>{p.label}</small>{p.title}</h3>
+                <p>{p.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section" id="news" aria-labelledby="news-title">
+        <div className="wrap section-inner">
+          <div className="section-head">
+            <span className="eyebrow">NEWS &amp; ACTIVITY</span>
+            <h2 id="news-title">ข่าวสารและกิจกรรม</h2>
+          </div>
+          <ul className="news-grid">
+            {news.map((n, i) => (
+              <li key={i} className="news-card">
+                <span className="news-photo"><Image src={n.image} alt="" fill sizes="(min-width: 900px) 33vw, 100vw" /></span>
+                <div className="news-body">
+                  <time dateTime={n.date}>{new Date(n.date).toLocaleDateString("th-TH", { dateStyle: "long" })}</time>
+                  <h3>{n.href ? <a href={n.href}>{n.title}</a> : n.title}</h3>
+                  <p>{n.excerpt}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="steps" aria-labelledby="steps-title">
         <div className="wrap steps-inner">
           <h2 id="steps-title">เริ่มเรียนใน 4 ขั้นตอน</h2>
@@ -77,9 +121,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="faq" aria-labelledby="faq-title">
+      <section className="faq" id="faq" aria-labelledby="faq-title">
         <div className="wrap faq-inner">
-          <div className="faq-head">
+          <div className="faq-head section-head">
             <h2 id="faq-title">คำถามที่พบบ่อย</h2>
           </div>
           <div className="faq-boxes">
@@ -90,6 +134,20 @@ export default function Home() {
               </details>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="section section-alt" id="contact" aria-labelledby="contact-title">
+        <div className="wrap section-inner">
+          <div className="section-head">
+            <span className="eyebrow">GET IN TOUCH</span>
+            <h2 id="contact-title">ติดต่อเรา</h2>
+          </div>
+          <ul className="contact-grid">
+            <li className="contact-card"><span className="pillar-icon"><Icon name="book" size={22} /></span><div><h3>ที่อยู่</h3><p>{org.name}<br />{org.address}</p></div></li>
+            <li className="contact-card"><span className="pillar-icon"><Icon name="clock" size={22} /></span><div><h3>โทรศัพท์</h3><p>{org.phone}<br />{org.hours}</p></div></li>
+            <li className="contact-card"><span className="pillar-icon"><Icon name="chat" size={22} /></span><div><h3>อีเมล</h3><p>{org.email}</p></div></li>
+          </ul>
         </div>
       </section>
     </>

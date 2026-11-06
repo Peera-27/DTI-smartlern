@@ -35,6 +35,12 @@ async function Dashboard() {
       })
     : [];
   const finished = enrollments.filter((e) => e.completedAt).length;
+  const certs = enrollments.filter((e) => e.course.certificates.length).length;
+  // อ่านจาก DB ไม่ใช่ session เพราะชื่อใน JWT ไม่อัปเดตหลังแก้โปรไฟล์
+  const me = userId
+    ? await prisma.user.findUnique({ where: { id: userId }, select: { name: true, email: true, image: true, organization: true, position: true, phone: true, role: true, createdAt: true } })
+    : null;
+  const initials = (me?.name ?? me?.email ?? "?").trim().slice(0, 2).toUpperCase();
 
   return (
     <>
@@ -87,17 +93,36 @@ async function Dashboard() {
       </section>
 
       <aside aria-labelledby="account-title" className="account-panel">
-        <h2 id="account-title">บัญชีของฉัน</h2>
+        <div className="profile-head">
+          {me?.image ? (
+            // eslint-disable-next-line @next/next/no-img-element -- รูปจาก Google ไม่ได้อยู่ใน images.remotePatterns
+            <img src={me.image} alt="" className="profile-avatar" referrerPolicy="no-referrer" />
+          ) : (
+            <span className="profile-avatar" aria-hidden="true">{initials}</span>
+          )}
+          <div>
+            <h2 id="account-title">{me?.name ?? "ผู้เรียน"}</h2>
+            <p>{[me?.position, me?.organization].filter(Boolean).join(" · ") || roleLabel[me?.role ?? "LEARNER"]}</p>
+          </div>
+        </div>
+        <ul className="profile-stats">
+          <li><strong>{enrollments.length}</strong>ลงทะเบียน</li>
+          <li><strong>{finished}</strong>เรียนจบ</li>
+          <li><strong>{certs}</strong>ใบประกาศ</li>
+        </ul>
         <dl>
-          <dt>ชื่อ</dt>
-          <dd>{session?.user?.name ?? "-"}</dd>
           <dt>อีเมล</dt>
-          <dd>{session?.user?.email ?? "-"}</dd>
+          <dd>{me?.email ?? "-"}</dd>
+          <dt>เบอร์โทร</dt>
+          <dd>{me?.phone ?? "-"}</dd>
           <dt>บทบาท</dt>
-          <dd>{session?.user?.role ? roleLabel[session.user.role] : "-"}</dd>
+          <dd>{roleLabel[me?.role ?? "LEARNER"]}</dd>
+          <dt>สมาชิกตั้งแต่</dt>
+          <dd>{me ? me.createdAt.toLocaleDateString("th-TH", { dateStyle: "long" }) : "-"}</dd>
         </dl>
-        {session?.user?.role === "ADMIN" && (
-          <Link href="/admin" className="button button-primary">
+        <Link href="/dashboard/settings" className="button button-primary">แก้ไขโปรไฟล์และตั้งค่า</Link>
+        {me?.role === "ADMIN" && (
+          <Link href="/admin" className="button button-outline">
             จัดการหลักสูตร
           </Link>
         )}

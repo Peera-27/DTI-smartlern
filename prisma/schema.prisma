@@ -30,6 +30,9 @@ model User {
   emailVerified DateTime?
   passwordHash  String?               // null ถ้าสมัครด้วย Google
   image         String?
+  phone         String?
+  organization  String?               // หน่วยงาน / สังกัด
+  position      String?               // ตำแหน่ง
   role          Role      @default(LEARNER)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
