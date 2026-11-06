@@ -15,11 +15,14 @@ export default {
     authorized({ auth, request: { nextUrl } }) {
       const user = auth?.user;
       const path = nextUrl.pathname;
-      if (path.startsWith("/admin")) return user?.role === "ADMIN";
-      if (path.startsWith("/dashboard") || path.startsWith("/learn")) return !!user;
+      // ด่านนี้เช็คแค่ว่าล็อกอินแล้ว ไม่เช็ค role: role ใน JWT ตั้งตอนล็อกอินครั้งเดียว คนที่เพิ่งได้สิทธิ์แอดมินจะถูกเด้งจนกว่าจะล็อกอินใหม่
+      // สิทธิ์แอดมินจริงเช็คจาก DB ทุกครั้งที่ requireAdminPage / requireAdmin (lib/admin/action.ts)
+      if (path.startsWith("/admin") || path.startsWith("/dashboard") || path.startsWith("/learn")) return !!user;
       return true;
     },
     jwt({ token, user }) {
+      // ไม่เก็บรูปใน token: รูปที่อัปโหลดเป็น data URL หลายสิบ KB จะทำให้ cookie ใหญ่จนเข้าสู่ระบบไม่ได้ (หน้าโปรไฟล์อ่านรูปจาก DB เอง)
+      delete token.picture;
       if (user) {
         token.id = user.id;
         token.role = (user.role as Role | undefined) ?? "LEARNER";
