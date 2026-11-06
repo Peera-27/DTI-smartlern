@@ -21,7 +21,10 @@ export function useConfirm() {
 function ConfirmDialog({ title, message, confirmLabel, danger, onClose }: Ask & { onClose: (ok: boolean) => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    if (!ref.current?.open) ref.current?.showModal();
+    const dialog = ref.current;
+    if (!dialog?.open) dialog?.showModal();
+    // ปิดเมื่อถูกซ่อน/ถอดออก: modal ที่ค้างในหน้าซ่อน (cacheComponents) จะทำให้หน้าอื่นกดไม่ได้
+    return () => dialog?.close();
   }, []);
   return (
     <dialog ref={ref} className="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message" onCancel={(e) => { e.preventDefault(); onClose(false); }}>

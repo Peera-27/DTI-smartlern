@@ -19,7 +19,12 @@ export function CourseDialog({ course, onClose }: { course: Course | null; onClo
     if (!dialog.open) dialog.showModal();
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = previousOverflow; };
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      // cacheComponents เก็บหน้าเก่าไว้แบบซ่อน (React Activity) แทนการ unmount ตอนเปลี่ยนหน้า
+      // ถ้าไม่ปิด modal ที่ค้างในหน้าซ่อนจะทำให้หน้าใหม่กดอะไรไม่ได้ (inert) จนกว่าจะรีเฟรช
+      if (dialog.open) dialog.close();
+    };
   }, [course]);
 
   function handleBackdropClick(event: MouseEvent<HTMLDialogElement>) {
@@ -30,8 +35,9 @@ export function CourseDialog({ course, onClose }: { course: Course | null; onClo
     }
   }
 
+  // event close มาแบบ async: ถ้า effect เปิด dialog ใหม่ไปแล้ว (StrictMode/กลับมาหน้าเดิม) ไม่ต้องล้าง state
   return (
-    <dialog id="course-dialog" ref={dialogRef} className="course-dialog" aria-labelledby="course-dialog-title" onClose={onClose} onClick={handleBackdropClick}>
+    <dialog id="course-dialog" ref={dialogRef} className="course-dialog" aria-labelledby="course-dialog-title" onClose={() => { if (!dialogRef.current?.open) onClose(); }} onClick={handleBackdropClick}>
       <div className="course-dialog-header"><span>รายละเอียดหลักสูตร</span><button type="button" className="course-dialog-close" aria-label="ปิดรายละเอียดหลักสูตร" onClick={() => dialogRef.current?.close()}><span aria-hidden="true">×</span></button></div>
       {course && <>
         <div className="course-dialog-image"><Image src={course.image} alt={course.alt} fill sizes="(min-width: 800px) 720px, 95vw"/></div>

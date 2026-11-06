@@ -30,8 +30,10 @@ export function AvatarCropper({ file, onDone, onCancel }: { file: File; onDone: 
     };
     el.onerror = () => !stale && setError("เปิดไฟล์รูปนี้ไม่ได้ ลองใช้ JPG หรือ PNG");
     el.src = url;
+    const d = dialog.current;
     return () => {
       stale = true;
+      d?.close(); // modal ที่ค้างในหน้าซ่อน (cacheComponents) จะทำให้หน้าอื่นกดไม่ได้
       URL.revokeObjectURL(url);
     };
   }, [file]);
