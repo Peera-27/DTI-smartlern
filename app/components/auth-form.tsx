@@ -83,6 +83,8 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           <form action={loginWithGoogle}>
             <button type="submit" className="button button-outline auth-google" disabled={pending}>ดำเนินการต่อด้วย Google</button>
           </form>
+          {/* แจ้งก่อนเก็บข้อมูลตาม PDPA ม.23 ทั้งสมัครด้วยอีเมลและ Google (Google สร้างบัญชีใหม่ได้จากหน้าเข้าสู่ระบบด้วย) */}
+          <p className="auth-consent">การสมัครหรือเข้าสู่ระบบถือว่าคุณรับทราบ<Link href="/privacy">นโยบายความเป็นส่วนตัว</Link></p>
           <Suspense fallback={null}><AuthErrorNotice /></Suspense>
           <Reveal as="p" className="auth-switch" d={4}>{register ? "มีบัญชีอยู่แล้ว?" : "ยังไม่มีบัญชี?"} <Link href={register ? "/login" : "/register"}>{register ? "เข้าสู่ระบบ" : "สมัครสมาชิก"}</Link></Reveal>
         </section>

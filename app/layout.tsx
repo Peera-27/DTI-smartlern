@@ -4,7 +4,10 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { AccountLink } from "./components/account-link";
 import { LoginButton, SiteHeader } from "./components/site-header";
+import Image from "next/image";
 import { photoCredits } from "./data/courses";
+import { org } from "./data/site";
+import utcLogo from "./images/utc icon.png";
 import "./globals.css";
 
 const displayFont = localFont({
@@ -46,25 +49,35 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main-content" className="site-main" tabIndex={-1}>{children}</main>
         <footer className="site-footer">
           <div className="wrap">
-            <p className="footer-name" aria-hidden="true">SmartLern</p>
-            <div className="grid footer-row">
-              <nav className="footer-places" aria-label="ลิงก์ท้ายเว็บ">
-                <Link href="/#courses">หลักสูตรทั้งหมด</Link>
-                <Link href="/login">เข้าสู่ระบบ</Link>
-                <Link href="/register">สมัครสมาชิก</Link>
-              </nav>
-              <div className="footer-credits">
-                <h2>ภาพประกอบ</h2>
-                <ul>
-                  {photoCredits.map((c) => (
-                    <li key={c.href}><a href={c.href} target="_blank" rel="noreferrer">“{c.title}”</a> โดย {c.by}, {c.licence}</li>
-                  ))}
-                </ul>
-                <p>ภาพปรับเป็นขาวดำ</p>
+            <div className="footer-cols">
+              <div className="footer-org">
+                <Image src={utcLogo} alt="" style={{ width: 72, height: 52, objectFit: "contain" }} />
+                <div><strong>{org.unit}</strong><p>{org.name}<br />{org.address}</p></div>
+              </div>
+              <div className="footer-col">
+                <h2>เมนู</h2>
+                <nav className="footer-places" aria-label="ลิงก์ท้ายเว็บ">
+                  <Link href="/#courses">หลักสูตรทั้งหมด</Link>
+                  <Link href="/#about">เกี่ยวกับ</Link>
+                  <Link href="/#news">ข่าวสาร</Link>
+                  <Link href="/#faq">ถามตอบ</Link>
+                </nav>
+              </div>
+              <div className="footer-col">
+                <h2>ติดต่อ</h2>
+                <p>โทร {org.phone}<br />อีเมล {org.email}<br />{org.hours}</p>
               </div>
             </div>
+            <details className="footer-credits">
+              <summary>ภาพประกอบ</summary>
+              <ul>
+                {photoCredits.map((c) => (
+                  <li key={c.href}><a href={c.href} target="_blank" rel="noreferrer">“{c.title}”</a> โดย {c.by}, {c.licence}</li>
+                ))}
+              </ul>
+            </details>
             <div className="footer-legal">
-              <span>© 2569 SmartLern · ฝ่ายฝึกอบรม</span>
+              <span>© 2569 {org.unit} · {org.name} · <Link href="/privacy">นโยบายความเป็นส่วนตัว</Link></span>
               <a href="#top">กลับขึ้นด้านบน</a>
             </div>
           </div>
