@@ -1,5 +1,12 @@
 import { describe, expect, test } from "bun:test";
-import { createCourseSchema, extractYoutubeId, imageSrc, saveQuizSchema } from "./schemas";
+import { createCourseSchema, extractYoutubeId, imageSrc, saveQuizSchema, uploadedCover } from "./schemas";
+
+test("uploaded cover accepts bounded JPEG data and rejects other formats or oversized data", () => {
+  expect(uploadedCover.safeParse("data:image/jpeg;base64,/9j/4AAQSkZJRg==").success).toBe(true);
+  expect(uploadedCover.safeParse("data:image/svg+xml;base64,PHN2Zz4=").success).toBe(false);
+  expect(uploadedCover.safeParse("data:image/jpeg;base64,invalid").success).toBe(false);
+  expect(uploadedCover.safeParse("data:image/jpeg;base64,/9j/" + "A".repeat(600_000)).success).toBe(false);
+});
 
 const ID = "dQw4w9WgXcQ";
 

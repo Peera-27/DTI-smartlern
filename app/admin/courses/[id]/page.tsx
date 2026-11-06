@@ -1,3 +1,4 @@
+import { CourseForm } from "../../course-form";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,10 +12,9 @@ import {
   removeEnrollmentForm,
   reorderLessonsForm,
   setPublishedForm,
-  updateCourseForm,
 } from "../../actions";
 import { ConfirmButton } from "../../confirm-button";
-import { CourseFields, Flash, LessonFields, PageHead, StatusPill, dateFmt, lessonTypeLabel, requireAdminPage } from "../../shared";
+import { Flash, LessonFields, PageHead, StatusPill, dateFmt, lessonTypeLabel, requireAdminPage } from "../../shared";
 
 export const metadata: Metadata = { title: "แก้ไขหลักสูตร", robots: { index: false } };
 
@@ -140,12 +140,7 @@ async function EditCourse({ params, searchParams }: PageProps<"/admin/courses/[i
           <div className="panel-head">
             <h2 id="details-title">ข้อมูลหลักสูตร</h2>
           </div>
-          <form action={updateCourseForm.bind(null, course.id)} className="admin-form">
-            <CourseFields c={course} />
-            <div className="form-actions">
-              <button className="button button-primary">บันทึก</button>
-            </div>
-          </form>
+          <CourseForm key={course.updatedAt.toISOString()} course={course} />
         </section>
       </div>
 

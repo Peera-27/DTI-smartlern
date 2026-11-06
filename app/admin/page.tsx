@@ -10,7 +10,9 @@ export const metadata: Metadata = { title: "จัดการหลักสู
 
 async function Courses({ searchParams }: PageProps<"/admin">) {
   await requireAdminPage();
-  const { error, done } = await searchParams;
+  const { error, done, q, status } = await searchParams;
+  const query = typeof q === "string" ? q.trim() : "";
+  const filter = status === "published" || status === "draft" ? status : "all";
   const [courses, learners, finished, certificates] = await Promise.all([
     prisma.course.findMany({
       orderBy: { createdAt: "desc" },
@@ -27,6 +29,7 @@ async function Courses({ searchParams }: PageProps<"/admin">) {
     prisma.certificate.count(),
   ]);
   const published = courses.filter((c) => c.published).length;
+  const visible = courses.filter((course) => (!query || `${course.title} ${course.slug}`.toLocaleLowerCase("th").includes(query.toLocaleLowerCase("th"))) && (filter === "all" || course.published === (filter === "published")));
 
   return (
     <>
@@ -67,10 +70,17 @@ async function Courses({ searchParams }: PageProps<"/admin">) {
       </dl>
 
       <section className="panel" aria-labelledby="course-table-title">
+        <form className="admin-course-filters" role="search" action="/admin">
+          <div className="field"><label htmlFor="course-search">ค้นหาหลักสูตร</label><input id="course-search" name="q" type="search" defaultValue={query} placeholder="ชื่อหลักสูตรหรือชื่อใน URL" /></div>
+          <div className="field"><label htmlFor="course-status">สถานะ</label><select id="course-status" name="status" defaultValue={filter}><option value="all">ทั้งหมด</option><option value="published">เผยแพร่</option><option value="draft">ฉบับร่าง</option></select></div>
+          <button className="button button-primary">ค้นหา</button>
+          {(query || filter !== "all") && <Link href="/admin" className="row-action">ล้างตัวกรอง</Link>}
+          <p role="status">พบ {visible.length} จาก {courses.length} หลักสูตร</p>
+        </form>
         <h2 id="course-table-title" className="sr-only">
           รายการหลักสูตร
         </h2>
-        {courses.length ? (
+        {visible.length ? (
           <div className="table-wrap">
             <table className="table">
               <thead>
@@ -92,7 +102,7 @@ async function Courses({ searchParams }: PageProps<"/admin">) {
                 </tr>
               </thead>
               <tbody>
-                {courses.map((c) => (
+                {visible.map((c) => (
                   <tr key={c.id}>
                     <td className="cell-main">
                       <Link href={`/admin/courses/${c.id}`}>{c.title}</Link>
@@ -128,7 +138,7 @@ async function Courses({ searchParams }: PageProps<"/admin">) {
           </div>
         ) : (
           <div className="empty">
-            <p>ยังไม่มีหลักสูตร</p>
+            <p>{courses.length ? "ไม่พบหลักสูตรที่ตรงกับตัวกรอง ลองเปลี่ยนคำค้นหาหรือสถานะ" : "ยังไม่มีหลักสูตร"}</p>
             <Link href="/admin/courses/new" className="button button-primary">
               สร้างหลักสูตรแรก
             </Link>
